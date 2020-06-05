@@ -13,9 +13,11 @@ func main() {
 
 	log.Println("Attempting to start HTTP Server.")
 
-	http.HandleFunc("/", web.HandleRootRequest)
+	handler := &web.RegexpHandler{}
 
-	var err = http.ListenAndServe(":"+strconv.Itoa(8080), nil)
+	handler.HandleFunc("/", web.HandleRootRequest)
+
+	var err = http.ListenAndServe(":"+strconv.Itoa(8080), handler)
 
 	if err != nil {
 		log.Panicln("Server failed starting. Error: %s", err)
