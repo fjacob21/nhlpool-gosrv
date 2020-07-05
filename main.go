@@ -1,20 +1,22 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
 
-	"nhlpool.com/service/go/nhlpool/data"
+	"nhlpool.com/service/go/nhlpool/store"
+
 	"nhlpool.com/service/go/nhlpool/web"
 )
 
 func main() {
-	fmt.Println(data.UserHash("fred"))
-
-	log.Println("Creating dummy messages")
-
+	configs := LoadConfigs()
+	admin := store.GetStore().GetPlayer(configs.Admin.ID)
+	if admin != nil {
+		store.GetStore().DeletePlayer(admin)
+	}
+	store.GetStore().AddPlayer(&configs.Admin)
 	log.Println("Attempting to start HTTP Server.")
 
 	handler := &web.RegexpHandler{}
@@ -27,7 +29,7 @@ func main() {
 	handler.HandleFunc("^/player/$", web.HandlePlayersRequest)
 	handler.HandleFunc("^/$", web.HandleRootRequest)
 
-	var err = http.ListenAndServe(":"+strconv.Itoa(8080), handler)
+	var err = http.ListenAndServe(":"+strconv.Itoa(configs.Port), handler)
 
 	if err != nil {
 		log.Printf("Server failed starting. Error: %s", err.Error())
