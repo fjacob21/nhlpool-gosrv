@@ -1,37 +1,24 @@
 package main
 
 import (
-	"log"
-	"net/http"
-	"strconv"
+	"nhlpool.com/service/go/nhlpool/cmd"
 
-	"nhlpool.com/service/go/nhlpool/store"
+	"github.com/spf13/pflag"
+)
 
-	"nhlpool.com/service/go/nhlpool/web"
+var (
+	importBackup = pflag.BoolP("import", "i", false, "Import player from backup")
+	backup       = pflag.StringP("backup", "b", "backup.json", "Backup file to import")
+	user         = pflag.StringP("user", "u", "admin", "User to use for action")
+	password     = pflag.StringP("password", "p", "", "Password to use for action")
 )
 
 func main() {
-	configs := LoadConfigs()
-	admin := store.GetStore().GetPlayer(configs.Admin.ID)
-	if admin != nil {
-		store.GetStore().DeletePlayer(admin)
-	}
-	store.GetStore().AddPlayer(&configs.Admin)
-	log.Println("Attempting to start HTTP Server.")
+	pflag.Parse()
 
-	handler := &web.RegexpHandler{}
-
-	handler.HandleFunc("^/player/(.*)/login/$", web.HandlePlayerLoginRequest)
-	handler.HandleFunc("^/player/(.*)/logout/$", web.HandlePlayerLogoutRequest)
-	handler.HandleFunc("^/player/(.*)/changepassword/$", web.HandlePlayerChangePasswordRequest)
-	handler.HandleFunc("^/player/(.*)/$", web.HandlePlayerRequest)
-	handler.HandleFunc("^/player/import/$", web.HandlePlayerImportRequest)
-	handler.HandleFunc("^/player/$", web.HandlePlayersRequest)
-	handler.HandleFunc("^/$", web.HandleRootRequest)
-
-	var err = http.ListenAndServe(":"+strconv.Itoa(configs.Port), handler)
-
-	if err != nil {
-		log.Printf("Server failed starting. Error: %s", err.Error())
+	if *importBackup {
+		cmd.Import(*backup, *user, *password)
+	} else {
+		cmd.Service()
 	}
 }

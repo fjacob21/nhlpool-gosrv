@@ -36,7 +36,7 @@ func HandlePlayersRequest(w http.ResponseWriter, r *http.Request) {
 
 // HandlePlayerImportRequest Handle the web request for player/import
 func HandlePlayerImportRequest(w http.ResponseWriter, r *http.Request) {
-	log.Println("Players import:", r.Method)
+
 	switch r.Method {
 	case http.MethodPost:
 		var request data.ImportPlayerRequest

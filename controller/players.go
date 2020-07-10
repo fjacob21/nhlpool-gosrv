@@ -44,14 +44,17 @@ func ImportPlayer(request data.ImportPlayerRequest) data.ImportPlayerReply {
 	var reply data.ImportPlayerReply
 	err := store.GetStore().AddPlayer(&request.Player)
 	if err != nil {
+		log.Println("Import Player Already exist")
 		reply.Result.Code = data.EXISTS
 		return reply
 	}
 	session := store.GetSessionManager().Get(request.SessionID)
 	if session == nil || !session.Player.Admin {
+		log.Println("Import Player Access denied")
 		reply.Result.Code = data.ACCESSDENIED
 		return reply
 	}
+	log.Println("Import Player", request)
 	reply.Result.Code = data.SUCCESS
 	reply.Player = request.Player
 	return reply

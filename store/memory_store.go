@@ -33,11 +33,20 @@ func (ms *MemoryStore) GetPlayers() []data.Player {
 	return players
 }
 
+func (ms *MemoryStore) getPlayerByName(name string) *data.Player {
+	for _, player := range ms.players {
+		if player.Name == name {
+			return player
+		}
+	}
+	return nil
+}
+
 // GetPlayer Return the player of the specified ID
 func (ms *MemoryStore) GetPlayer(id string) *data.Player {
 	player, ok := ms.players[id]
 	if !ok {
-		return nil
+		return ms.getPlayerByName(id)
 	}
 	return player
 }
