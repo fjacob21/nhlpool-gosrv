@@ -13,24 +13,25 @@ type MemoryStore struct {
 }
 
 // NewMemoryStore Create a new memory store
-func NewMemoryStore() *MemoryStore {
+func NewMemoryStore() Store {
 	store := &MemoryStore{players: make(map[string]*data.Player), sessions: make(map[string]data.LoginData)}
 	return store
 }
 
 // Clean Empty the store
-func (ms *MemoryStore) Clean() {
+func (ms *MemoryStore) Clean() error {
 	ms.players = make(map[string]*data.Player)
 	ms.sessions = make(map[string]data.LoginData)
+	return nil
 }
 
 // GetPlayers Return a list of all players
-func (ms *MemoryStore) GetPlayers() []data.Player {
+func (ms *MemoryStore) GetPlayers() ([]data.Player, error) {
 	var players []data.Player
 	for _, player := range ms.players {
 		players = append(players, *player)
 	}
-	return players
+	return players, nil
 }
 
 func (ms *MemoryStore) getPlayerByName(name string) *data.Player {
@@ -81,12 +82,33 @@ func (ms *MemoryStore) DeletePlayer(player *data.Player) error {
 	return nil
 }
 
-// StoreSessions Store the sessions table
-func (ms *MemoryStore) StoreSessions(sessions map[string]data.LoginData) {
-	ms.sessions = sessions
+// AddSession Add a new session
+func (ms *MemoryStore) AddSession(session *data.LoginData) error {
+	ms.sessions[session.SessionID] = *session
+	return nil
 }
 
-// LoadSessions Load the sessions table
-func (ms *MemoryStore) LoadSessions() map[string]data.LoginData {
-	return ms.sessions
+// DeleteSession Delete a session
+func (ms *MemoryStore) DeleteSession(session *data.LoginData) error {
+	delete(ms.sessions, session.SessionID)
+	return nil
+}
+
+// GetSession Return a session using it ID
+func (ms *MemoryStore) GetSession(sessionID string) (*data.LoginData, error) {
+	session, ok := ms.sessions[sessionID]
+	if !ok {
+		return nil, errors.New("Do not exist")
+	}
+	return &session, nil
+}
+
+// GetSessionByPlayer Return a session using it player name
+func (ms *MemoryStore) GetSessionByPlayer(player *data.Player) (*data.LoginData, error) {
+	for _, session := range ms.sessions {
+		if session.Player.ID == player.ID {
+			return &session, nil
+		}
+	}
+	return nil, errors.New("Do not exist")
 }

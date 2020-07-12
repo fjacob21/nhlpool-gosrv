@@ -9,36 +9,51 @@ import (
 )
 
 func TestNewSession(t *testing.T) {
-	store.Clean()
+	Clean()
 	sessionManager := NewSessionManager()
 	assert.NotNil(t, sessionManager, "Should not be nil")
 }
 
 func TestSessionLogin(t *testing.T) {
-	store.Clean()
+	Clean()
 	sessionManager := NewSessionManager()
 	assert.NotNil(t, sessionManager, "Should not be nil")
 	player := data.CreatePlayer("name", "email", true, "password")
+	GetStore().AddPlayer(player)
 	sessionID := sessionManager.Login(player, "password")
 	assert.NotEqual(t, sessionID, "", "Invalid session ID")
 }
 
 func TestSessionDoubleLogin(t *testing.T) {
-	store.Clean()
+	Clean()
 	sessionManager := NewSessionManager()
 	assert.NotNil(t, sessionManager, "Should not be nil")
 	player := data.CreatePlayer("name", "email", true, "password")
+	GetStore().AddPlayer(player)
 	sessionID := sessionManager.Login(player, "password")
 	sessionID2 := sessionManager.Login(player, "password")
 	assert.NotEqual(t, sessionID, "", "Invalid session ID")
 	assert.Equal(t, sessionID, sessionID2, "Session ID need to be the same")
 }
 
-func TestSessionLogout(t *testing.T) {
-	store.Clean()
+func TestSessionDoubleLoginBadPassword(t *testing.T) {
+	Clean()
 	sessionManager := NewSessionManager()
 	assert.NotNil(t, sessionManager, "Should not be nil")
 	player := data.CreatePlayer("name", "email", true, "password")
+	GetStore().AddPlayer(player)
+	sessionID := sessionManager.Login(player, "password")
+	sessionID2 := sessionManager.Login(player, "badpassword")
+	assert.NotEqual(t, sessionID, "", "Invalid session ID")
+	assert.Equal(t, sessionID2, "", "Should be empty")
+}
+
+func TestSessionLogout(t *testing.T) {
+	Clean()
+	sessionManager := NewSessionManager()
+	assert.NotNil(t, sessionManager, "Should not be nil")
+	player := data.CreatePlayer("name", "email", true, "password")
+	GetStore().AddPlayer(player)
 	sessionID := sessionManager.Login(player, "password")
 	assert.NotEqual(t, sessionID, "", "Invalid session ID")
 	err := sessionManager.Logout(sessionID)
@@ -46,7 +61,7 @@ func TestSessionLogout(t *testing.T) {
 }
 
 func TestSessionInvalidLogout(t *testing.T) {
-	store.Clean()
+	Clean()
 	sessionManager := NewSessionManager()
 	assert.NotNil(t, sessionManager, "Should not be nil")
 	err := sessionManager.Logout("badessionid")
@@ -54,10 +69,11 @@ func TestSessionInvalidLogout(t *testing.T) {
 }
 
 func TestSessionGet(t *testing.T) {
-	store.Clean()
+	Clean()
 	sessionManager := NewSessionManager()
 	assert.NotNil(t, sessionManager, "Should not be nil")
 	player := data.CreatePlayer("name", "email", true, "password")
+	GetStore().AddPlayer(player)
 	sessionID := sessionManager.Login(player, "password")
 	assert.NotEqual(t, sessionID, "", "Invalid session ID")
 	loginData := sessionManager.Get(sessionID)
@@ -65,7 +81,7 @@ func TestSessionGet(t *testing.T) {
 }
 
 func TestSessionInvalidGet(t *testing.T) {
-	store.Clean()
+	Clean()
 	sessionManager := NewSessionManager()
 	assert.NotNil(t, sessionManager, "Should not be nil")
 	loginData := sessionManager.Get("badessionid")
@@ -73,7 +89,7 @@ func TestSessionInvalidGet(t *testing.T) {
 }
 
 func TestSessionEmptyGet(t *testing.T) {
-	store.Clean()
+	Clean()
 	sessionManager := NewSessionManager()
 	assert.NotNil(t, sessionManager, "Should not be nil")
 	loginData := sessionManager.Get("")

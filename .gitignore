@@ -17,3 +17,5 @@ go.sum
 # vendor/
 
 nhlpool
+nhlpool.db
+backup.json

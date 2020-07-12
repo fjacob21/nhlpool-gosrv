@@ -1,6 +1,7 @@
 package store
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
@@ -8,16 +9,17 @@ import (
 	"nhlpool.com/service/go/nhlpool/data"
 )
 
-func TestNewMemoryStore(t *testing.T) {
-	store := NewMemoryStore()
+func TestNewSqliteStore(t *testing.T) {
+	store := NewSqliteStore()
 	assert.NotNil(t, store, "Should not be nil")
 }
 
-func TestNewMemoryStoreAddPlayer(t *testing.T) {
-	store := NewMemoryStore()
+func TestNewSqliteStoreAddPlayer(t *testing.T) {
+	store := NewSqliteStore()
 	assert.NotNil(t, store, "Should not be nil")
 	player := data.CreatePlayer("name", "email", false, "password")
-	store.AddPlayer(player)
+	err := store.AddPlayer(player)
+	assert.NoError(t, err, "Should not have error")
 	getPlayer := store.GetPlayer(player.ID)
 	assert.NotNil(t, getPlayer, "Should not be nil")
 	assert.Equal(t, getPlayer.ID, player.ID, "Invalid ID")
@@ -28,8 +30,8 @@ func TestNewMemoryStoreAddPlayer(t *testing.T) {
 	assert.Nil(t, getPlayer.LastLogin, "Should be nil")
 }
 
-func TestNewMemoryStoreDoubleAddPlayer(t *testing.T) {
-	store := NewMemoryStore()
+func TestNewSqliteStoreDoubleAddPlayer(t *testing.T) {
+	store := NewSqliteStore()
 	assert.NotNil(t, store, "Should not be nil")
 	player := data.CreatePlayer("name", "email", false, "password")
 	err := store.AddPlayer(player)
@@ -46,8 +48,8 @@ func TestNewMemoryStoreDoubleAddPlayer(t *testing.T) {
 	assert.NotNil(t, err, "Should not be nil")
 }
 
-func TestNewMemoryStoreGetPlayers(t *testing.T) {
-	store := NewMemoryStore()
+func TestNewSqliteStoreGetPlayers(t *testing.T) {
+	store := NewSqliteStore()
 	assert.NotNil(t, store, "Should not be nil")
 	player := data.CreatePlayer("name", "email", false, "password")
 	players, _ := store.GetPlayers()
@@ -59,8 +61,8 @@ func TestNewMemoryStoreGetPlayers(t *testing.T) {
 	assert.Equal(t, players[0].ID, player.ID, "Should be the good player")
 }
 
-func TestNewMemoryStoreUpdatePlayer(t *testing.T) {
-	store := NewMemoryStore()
+func TestNewSqliteStoreUpdatePlayer(t *testing.T) {
+	store := NewSqliteStore()
 	assert.NotNil(t, store, "Should not be nil")
 	player := data.CreatePlayer("name", "email", false, "password")
 	store.AddPlayer(player)
@@ -77,16 +79,19 @@ func TestNewMemoryStoreUpdatePlayer(t *testing.T) {
 	assert.Nil(t, getPlayer.LastLogin, "Should be nil")
 }
 
-func TestNewMemoryStoreUpdateInvalidPlayer(t *testing.T) {
-	store := NewMemoryStore()
+func TestNewSqliteStoreUpdateInvalidPlayer(t *testing.T) {
+	fmt.Printf("Start\n")
+	store := NewSqliteStore()
 	assert.NotNil(t, store, "Should not be nil")
 	player := data.CreatePlayer("name", "email", false, "password")
+	players, _ := store.GetPlayers()
+	fmt.Printf("Players %v\n", players)
 	err := store.UpdatePlayer(player)
-	assert.NotNil(t, err, "Should be nil")
+	assert.NotNil(t, err, "Should not be nil")
 }
 
-func TestNewMemoryStoreDeletePlayer(t *testing.T) {
-	store := NewMemoryStore()
+func TestNewSqliteStoreDeletePlayer(t *testing.T) {
+	store := NewSqliteStore()
 	assert.NotNil(t, store, "Should not be nil")
 	player := data.CreatePlayer("name", "email", false, "password")
 	store.AddPlayer(player)
@@ -99,16 +104,16 @@ func TestNewMemoryStoreDeletePlayer(t *testing.T) {
 	assert.Equal(t, len(players), 0, "There should not be any player")
 }
 
-func TestNewMemoryStoreDeleteInvalidPlayer(t *testing.T) {
-	store := NewMemoryStore()
+func TestNewSqliteStoreDeleteInvalidPlayer(t *testing.T) {
+	store := NewSqliteStore()
 	assert.NotNil(t, store, "Should not be nil")
 	player := data.CreatePlayer("name", "email", false, "password")
 	err := store.DeletePlayer(player)
 	assert.NotNil(t, err, "Should be nil")
 }
 
-func TestNewMemoryStoreAddPSession(t *testing.T) {
-	store := NewMemoryStore()
+func TestNewSqliteStoreAddPSession(t *testing.T) {
+	store := NewSqliteStore()
 	assert.NotNil(t, store, "Should not be nil")
 	player := data.CreatePlayer("name", "email", false, "password")
 	store.AddPlayer(player)
@@ -119,13 +124,13 @@ func TestNewMemoryStoreAddPSession(t *testing.T) {
 	assert.NoError(t, err, "Should not have error")
 	assert.NotNil(t, getSession, "Should not be nil")
 	assert.Equal(t, getSession.SessionID, session.SessionID, "Invalid ID")
-	assert.Equal(t, getSession.LoginTime, session.LoginTime, "Invalid name")
+	assert.Equal(t, getSession.LoginTime.Unix(), session.LoginTime.Unix(), "Invalid time")
 	assert.NotNil(t, getSession.Player, "Should not be nil")
 	assert.Equal(t, getSession.Player.ID, player.ID, "Invalid email")
 }
 
-func TestNewMemoryStoreDeleteSession(t *testing.T) {
-	store := NewMemoryStore()
+func TestNewSqliteStoreDeleteSession(t *testing.T) {
+	store := NewSqliteStore()
 	assert.NotNil(t, store, "Should not be nil")
 	player := data.CreatePlayer("name", "email", false, "password")
 	store.AddPlayer(player)

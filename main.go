@@ -1,9 +1,9 @@
 package main
 
 import (
-	"nhlpool.com/service/go/nhlpool/cmd"
-
 	"github.com/spf13/pflag"
+	"nhlpool.com/service/go/nhlpool/cmd"
+	"nhlpool.com/service/go/nhlpool/store"
 )
 
 var (
@@ -16,6 +16,7 @@ var (
 func main() {
 	pflag.Parse()
 
+	store.SetStore(store.NewSqliteStore())
 	if *importBackup {
 		cmd.Import(*backup, *user, *password)
 	} else {
