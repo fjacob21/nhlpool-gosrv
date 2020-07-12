@@ -10,11 +10,15 @@ import (
 type MemoryStore struct {
 	players  map[string]*data.Player
 	sessions map[string]data.LoginData
+	leagues  map[string]*data.League
 }
 
 // NewMemoryStore Create a new memory store
 func NewMemoryStore() Store {
-	store := &MemoryStore{players: make(map[string]*data.Player), sessions: make(map[string]data.LoginData)}
+	store := &MemoryStore{}
+	store.players = make(map[string]*data.Player)
+	store.sessions = make(map[string]data.LoginData)
+	store.leagues = make(map[string]*data.League)
 	return store
 }
 
@@ -22,6 +26,7 @@ func NewMemoryStore() Store {
 func (ms *MemoryStore) Clean() error {
 	ms.players = make(map[string]*data.Player)
 	ms.sessions = make(map[string]data.LoginData)
+	ms.leagues = make(map[string]*data.League)
 	return nil
 }
 
@@ -111,4 +116,52 @@ func (ms *MemoryStore) GetSessionByPlayer(player *data.Player) (*data.LoginData,
 		}
 	}
 	return nil, errors.New("Do not exist")
+}
+
+// AddLeague Add a new league
+func (ms *MemoryStore) AddLeague(league *data.League) error {
+	_, ok := ms.leagues[league.ID]
+	if ok {
+		return errors.New("League already exist")
+	}
+	ms.leagues[league.ID] = league
+	return nil
+}
+
+// UpdateLeague Update a league info
+func (ms *MemoryStore) UpdateLeague(league *data.League) error {
+	_, ok := ms.leagues[league.ID]
+	if !ok {
+		return errors.New("League do not exist")
+	}
+	ms.leagues[league.ID] = league
+	return nil
+}
+
+// DeleteLeague Delete a league
+func (ms *MemoryStore) DeleteLeague(league *data.League) error {
+	_, ok := ms.leagues[league.ID]
+	if !ok {
+		return errors.New("League do not exist")
+	}
+	delete(ms.leagues, league.ID)
+	return nil
+}
+
+// GetLeague Get a league
+func (ms *MemoryStore) GetLeague(leagueID string) (*data.League, error) {
+	league, ok := ms.leagues[leagueID]
+	if !ok {
+		return nil, errors.New("League do not exist")
+	}
+	return league, nil
+}
+
+// GetLeagues Get all leagues
+func (ms *MemoryStore) GetLeagues() ([]data.League, error) {
+	var leagues []data.League
+	for _, league := range ms.leagues {
+		leagues = append(leagues, *league)
+	}
+	return leagues, nil
 }

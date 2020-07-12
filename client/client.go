@@ -132,3 +132,38 @@ func (c *Client) Import(id string, player data.BackupPlayer) error {
 	}
 	return nil
 }
+
+// AddLeague add a league
+func (c *Client) AddLeague(id string, name string, description string, website string) error {
+	if c.sessionID == "" {
+		return errors.New("Need to be logged")
+	}
+	body := data.AddLeagueRequest{}
+	body.ID = id
+	body.Name = name
+	body.Description = description
+	body.Website = website
+	buf := new(bytes.Buffer)
+	json.NewEncoder(buf).Encode(body)
+
+	url := fmt.Sprintf("%v/league/", c.url)
+	req, err := http.NewRequest("POST", url, buf)
+	if err != nil {
+		return err
+	}
+
+	client := &http.Client{}
+	res, err := client.Do(req)
+
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+	var addLeaguetReply data.AddLeagueReply
+	bodyReply, _ := ioutil.ReadAll(res.Body)
+	json.Unmarshal(bodyReply, &addLeaguetReply)
+	if addLeaguetReply.Result.Code != 0 {
+		return errors.New("Cannot Add")
+	}
+	return nil
+}
