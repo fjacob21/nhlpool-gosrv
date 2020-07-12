@@ -16,6 +16,11 @@ type Store interface {
 	DeleteSession(session *data.LoginData) error
 	GetSession(sessionID string) (*data.LoginData, error)
 	GetSessionByPlayer(player *data.Player) (*data.LoginData, error)
+	AddLeague(league *data.League) error
+	UpdateLeague(league *data.League) error
+	DeleteLeague(league *data.League) error
+	GetLeague(leagueID string) (*data.League, error)
+	GetLeagues() ([]data.League, error)
 }
 
 var activeStore = NewMemoryStore()

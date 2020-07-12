@@ -147,3 +147,67 @@ func TestNewSqliteStoreDeleteSession(t *testing.T) {
 	assert.Error(t, err, "Should have error")
 	assert.Nil(t, getSession, "Should be nil")
 }
+
+func TestNewSqliteStoreAddLeaguer(t *testing.T) {
+	store := NewSqliteStore()
+	assert.NotNil(t, store, "Should not be nil")
+	league := &data.League{ID: "id", Name: "name", Description: "description", Website: "website"}
+	err := store.AddLeague(league)
+	assert.NoError(t, err, "Should not have error")
+	getLeague, err := store.GetLeague(league.ID)
+	assert.NoError(t, err, "Should not have error")
+	assert.NotNil(t, getLeague, "Should not be nil")
+	assert.Equal(t, getLeague.ID, league.ID, "Invalid ID")
+	assert.Equal(t, getLeague.Name, league.Name, "Invalid name")
+	assert.Equal(t, getLeague.Description, league.Description, "Invalid description")
+	assert.Equal(t, getLeague.Website, league.Website, "Invalid we site")
+}
+
+func TestNewSqliteStoreUpdateLeague(t *testing.T) {
+	store := NewSqliteStore()
+	assert.NotNil(t, store, "Should not be nil")
+	league := &data.League{ID: "id", Name: "name", Description: "description", Website: "website"}
+	err := store.AddLeague(league)
+	assert.NoError(t, err, "Should not have error")
+	league.Name = "name2"
+	league.Description = "description2"
+	league.Website = "website2"
+	err = store.UpdateLeague(league)
+	assert.Nil(t, err, "Should be nil")
+	getLeague, err := store.GetLeague(league.ID)
+	assert.NoError(t, err, "Should not have error")
+	assert.NotNil(t, getLeague, "Should not be nil")
+	assert.Equal(t, getLeague.ID, "id", "Invalid ID")
+	assert.Equal(t, getLeague.Name, "name2", "Invalid name")
+	assert.Equal(t, getLeague.Description, "description2", "Invalid description")
+	assert.Equal(t, getLeague.Website, "website2", "Invalid we site")
+}
+
+func TestNewSqliteStoreDeleteLeague(t *testing.T) {
+	store := NewSqliteStore()
+	assert.NotNil(t, store, "Should not be nil")
+	league := &data.League{ID: "id", Name: "name", Description: "description", Website: "website"}
+	err := store.AddLeague(league)
+	assert.NoError(t, err, "Should not have error")
+	getLeague, err := store.GetLeague(league.ID)
+	assert.NoError(t, err, "Should not have error")
+	assert.NotNil(t, getLeague, "Should not be nil")
+	err = store.DeleteLeague(league)
+	assert.NoError(t, err, "Should not have error")
+	getLeague, err = store.GetLeague(league.ID)
+	assert.Error(t, err, "Should have error")
+	assert.Nil(t, getLeague, "Should be nil")
+}
+
+func TestNewSqliteStoreGetLeagues(t *testing.T) {
+	store := NewSqliteStore()
+	assert.NotNil(t, store, "Should not be nil")
+	league := &data.League{ID: "id", Name: "name", Description: "description", Website: "website"}
+	leagues, _ := store.GetLeagues()
+	assert.Equal(t, len(leagues), 0, "There should not have any leagues")
+	err := store.AddLeague(league)
+	assert.NoError(t, err, "Should not have error")
+	leagues, _ = store.GetLeagues()
+	assert.Equal(t, len(leagues), 1, "There should not have any leagues")
+	assert.Equal(t, leagues[0].ID, league.ID, "Should be the good league")
+}
