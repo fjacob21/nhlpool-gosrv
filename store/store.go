@@ -6,22 +6,29 @@ import (
 
 // Store interface of data storage object
 type Store interface {
-	Clean()
-	GetPlayers() []data.Player
+	Clean() error
+	GetPlayers() ([]data.Player, error)
 	GetPlayer(id string) *data.Player
 	AddPlayer(player *data.Player) error
 	UpdatePlayer(player *data.Player) error
 	DeletePlayer(player *data.Player) error
-	StoreSessions(sessions map[string]data.LoginData)
-	LoadSessions() map[string]data.LoginData
+	AddSession(session *data.LoginData) error
+	DeleteSession(session *data.LoginData) error
+	GetSession(sessionID string) (*data.LoginData, error)
+	GetSessionByPlayer(player *data.Player) (*data.LoginData, error)
 }
 
-var store = NewMemoryStore()
+var activeStore = NewMemoryStore()
 var sessionManager = NewSessionManager()
+
+// SetStore Return the current data store
+func SetStore(store Store) {
+	activeStore = store
+}
 
 // GetStore Return the current data store
 func GetStore() Store {
-	return store
+	return activeStore
 }
 
 // GetSessionManager Return the session manager
@@ -31,6 +38,5 @@ func GetSessionManager() *SessionManager {
 
 // Clean Clean the store
 func Clean() {
-	store.Clean()
-	sessionManager.Clean()
+	activeStore.Clean()
 }

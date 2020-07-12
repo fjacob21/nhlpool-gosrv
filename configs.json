@@ -6,5 +6,6 @@
         "admin": true,
         "password": "97b9a8f92052dcc3f262d5db85a8ced29b04914623aaeef4b1e68a158304426d"
     },
-    "port": 8080
+    "port": 8080,
+    "db": "./nhlpool.db"
 }

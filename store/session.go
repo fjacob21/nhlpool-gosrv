@@ -11,7 +11,6 @@ import (
 
 // SessionManager Store info about connection
 type SessionManager struct {
-	sessions map[string]data.LoginData
 }
 
 // NewSessionManager Create a new sessions manager
@@ -25,70 +24,38 @@ func generateSessionID(loginData *data.LoginData) string {
 	return fmt.Sprintf("%x", hash)
 }
 
-// Clean Empty the sessions
-func (sm *SessionManager) Clean() {
-	sm.sessions = make(map[string]data.LoginData)
-}
-
 // Login to the system
 func (sm *SessionManager) Login(player *data.Player, password string) string {
-	sm.load()
-	session := sm.find(player)
-	if session != nil {
-		fmt.Printf("Found session\n")
-		return session.SessionID
-	}
 	pswOK := player.PasswordOK(password)
 	if !pswOK {
 		fmt.Printf("Bad psw\n")
 		return ""
 	}
-	var data data.LoginData
+	session, _ := GetStore().GetSessionByPlayer(player)
+	if session != nil {
+		return session.SessionID
+	}
+	data := &data.LoginData{}
 	data.LoginTime = time.Now()
 	data.Player = *player
-	data.SessionID = generateSessionID(&data)
-	sm.sessions[data.SessionID] = data
-	sm.store()
+	data.SessionID = generateSessionID(data)
+	GetStore().AddSession(data)
 	return data.SessionID
 }
 
 // Logout the session
-func (sm *SessionManager) Logout(SessionID string) error {
-	sm.load()
-	session := sm.Get(SessionID)
+func (sm *SessionManager) Logout(sessionID string) error {
+	session := sm.Get(sessionID)
 	if session == nil {
 		return errors.New("Invalid result")
 	}
-	delete(sm.sessions, SessionID)
-	sm.store()
+	GetStore().DeleteSession(session)
 	return nil
 
 }
 
 // Get the sesson from the ID
-func (sm *SessionManager) Get(SessionID string) *data.LoginData {
-	sm.load()
-	session, ok := sm.sessions[SessionID]
-	if !ok {
-		return nil
-	}
-	return &session
-}
-
-func (sm *SessionManager) load() {
-	sm.sessions = store.LoadSessions()
-
-}
-
-func (sm *SessionManager) store() {
-	store.StoreSessions(sm.sessions)
-}
-
-func (sm *SessionManager) find(player *data.Player) *data.LoginData {
-	for _, session := range sm.sessions {
-		if session.Player.ID == player.ID {
-			return &session
-		}
-	}
-	return nil
+func (sm *SessionManager) Get(sessionID string) *data.LoginData {
+	session, _ := GetStore().GetSession(sessionID)
+	return session
 }

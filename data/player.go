@@ -55,7 +55,7 @@ func NewPlayer(id string, name string, email string, admin bool, lastLogin *time
 // PasswordOK Test password
 func (p *Player) PasswordOK(password string) bool {
 	passHash := PasswordHash(p.ID, password)
-	fmt.Printf("psw:%v test:%v\n", p.Password, passHash)
+	//fmt.Printf("psw:%v test:%v\n", p.Password, passHash)
 	return passHash == p.Password
 }
 

@@ -13,7 +13,7 @@ func GetPlayers() data.GetPlayersReply {
 	log.Println("Get Players")
 	var reply data.GetPlayersReply
 	reply.Result.Code = data.SUCCESS
-	reply.Players = store.GetStore().GetPlayers()
+	reply.Players, _ = store.GetStore().GetPlayers()
 	// Filter password
 	for i := range reply.Players {
 		reply.Players[i].Password = ""
