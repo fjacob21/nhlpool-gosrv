@@ -31,7 +31,7 @@ func (sm *SessionManager) Login(player *data.Player, password string) string {
 		fmt.Printf("Bad psw\n")
 		return ""
 	}
-	session, _ := GetStore().GetSessionByPlayer(player)
+	session, _ := GetStore().Session().GetSessionByPlayer(player)
 	if session != nil {
 		return session.SessionID
 	}
@@ -39,7 +39,7 @@ func (sm *SessionManager) Login(player *data.Player, password string) string {
 	data.LoginTime = time.Now()
 	data.Player = *player
 	data.SessionID = generateSessionID(data)
-	GetStore().AddSession(data)
+	GetStore().Session().AddSession(data)
 	return data.SessionID
 }
 
@@ -49,13 +49,13 @@ func (sm *SessionManager) Logout(sessionID string) error {
 	if session == nil {
 		return errors.New("Invalid result")
 	}
-	GetStore().DeleteSession(session)
+	GetStore().Session().DeleteSession(session)
 	return nil
 
 }
 
 // Get the sesson from the ID
 func (sm *SessionManager) Get(sessionID string) *data.LoginData {
-	session, _ := GetStore().GetSession(sessionID)
+	session, _ := GetStore().Session().GetSession(sessionID)
 	return session
 }

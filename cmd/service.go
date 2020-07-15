@@ -13,11 +13,11 @@ import (
 // Service Execute the nhlpoool service
 func Service() {
 	configs := config.LoadConfigs()
-	admin := store.GetStore().GetPlayer(configs.Admin.ID)
+	admin := store.GetStore().Player().GetPlayer(configs.Admin.ID)
 	if admin != nil {
-		store.GetStore().DeletePlayer(admin)
+		store.GetStore().Player().DeletePlayer(admin)
 	}
-	store.GetStore().AddPlayer(&configs.Admin)
+	store.GetStore().Player().AddPlayer(&configs.Admin)
 	log.Println("Attempting to start HTTP Server.")
 
 	handler := &web.RegexpHandler{}

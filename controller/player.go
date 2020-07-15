@@ -8,9 +8,9 @@ import (
 )
 
 func getPlayer(playerID string) *data.Player {
-	player := store.GetStore().GetPlayer(playerID)
+	player := store.GetStore().Player().GetPlayer(playerID)
 	if player == nil {
-		player = store.GetStore().GetPlayer(data.UserHash(playerID))
+		player = store.GetStore().Player().GetPlayer(data.UserHash(playerID))
 	}
 	return player
 }
@@ -47,7 +47,7 @@ func DeletePlayer(playerID string, request data.DeletePlayerRequest) data.Delete
 		reply.Result.Code = data.ACCESSDENIED
 		return reply
 	}
-	store.GetStore().DeletePlayer(player)
+	store.GetStore().Player().DeletePlayer(player)
 	reply.Result.Code = data.SUCCESS
 	return reply
 }
@@ -72,7 +72,7 @@ func EditPlayer(playerID string, request data.EditPlayerRequest) data.EditPlayer
 	}
 	player.Name = request.Name
 	player.Email = request.Email
-	err := store.GetStore().UpdatePlayer(player)
+	err := store.GetStore().Player().UpdatePlayer(player)
 	if err != nil {
 		reply.Result.Code = data.ERROR
 		reply.Player = data.Player{}
@@ -138,7 +138,7 @@ func ChangePassword(playerID string, request data.ChangePasswordRequest) data.Ch
 		return reply
 	}
 	player.ChangePassword(request.NewPassword)
-	err := store.GetStore().UpdatePlayer(player)
+	err := store.GetStore().Player().UpdatePlayer(player)
 	if err != nil {
 		reply.Result.Code = data.ERROR
 		return reply

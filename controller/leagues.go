@@ -13,7 +13,7 @@ func GetLeagues() data.GetLeaguesReply {
 	log.Println("Get Leagues")
 	var reply data.GetLeaguesReply
 	reply.Result.Code = data.SUCCESS
-	reply.Leagues, _ = store.GetStore().GetLeagues()
+	reply.Leagues, _ = store.GetStore().League().GetLeagues()
 	return reply
 }
 
@@ -22,7 +22,7 @@ func AddLeague(request data.AddLeagueRequest) data.AddLeagueReply {
 	var reply data.AddLeagueReply
 	log.Println("Add League", request)
 	league := &data.League{ID: request.ID, Name: request.Name, Description: request.Description, Website: request.Website}
-	err := store.GetStore().AddLeague(league)
+	err := store.GetStore().League().AddLeague(league)
 	if err != nil {
 		reply.Result.Code = data.EXISTS
 		return reply
