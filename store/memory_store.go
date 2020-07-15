@@ -5,6 +5,7 @@ type MemoryStore struct {
 	player  *MemoryStorePlayer
 	session *MemoryStoreSession
 	league  *MemoryStoreLeague
+	venue   *MemoryStoreVenue
 }
 
 // NewMemoryStore Create a new memory store
@@ -13,6 +14,7 @@ func NewMemoryStore() Store {
 	store.player = NewMemoryStorePlayer()
 	store.session = NewMemoryStoreSession()
 	store.league = NewMemoryStoreLeague()
+	store.venue = NewMemoryStoreVenue()
 	return store
 }
 
@@ -21,6 +23,7 @@ func (ms *MemoryStore) Clean() error {
 	ms.player.Clean()
 	ms.session.Clean()
 	ms.league.Clean()
+	ms.venue.Clean()
 	return nil
 }
 
@@ -37,4 +40,9 @@ func (ms *MemoryStore) Session() SessionStore {
 // League Return the league store
 func (ms *MemoryStore) League() LeagueStore {
 	return ms.league
+}
+
+// Venue Return the venue store
+func (ms *MemoryStore) Venue() VenueStore {
+	return ms.venue
 }

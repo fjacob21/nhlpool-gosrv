@@ -6,11 +6,7 @@ type Store interface {
 	Player() Player
 	Session() SessionStore
 	League() LeagueStore
-	// AddLeague(league *data.League) error
-	// UpdateLeague(league *data.League) error
-	// DeleteLeague(league *data.League) error
-	// GetLeague(leagueID string) (*data.League, error)
-	// GetLeagues() ([]data.League, error)
+	Venue() VenueStore
 }
 
 var activeStore = NewMemoryStore()
