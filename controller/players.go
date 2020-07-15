@@ -13,7 +13,7 @@ func GetPlayers() data.GetPlayersReply {
 	log.Println("Get Players")
 	var reply data.GetPlayersReply
 	reply.Result.Code = data.SUCCESS
-	reply.Players, _ = store.GetStore().GetPlayers()
+	reply.Players, _ = store.GetStore().Player().GetPlayers()
 	// Filter password
 	for i := range reply.Players {
 		reply.Players[i].Password = ""
@@ -26,7 +26,7 @@ func AddPlayer(request data.AddPlayerRequest) data.AddPlayerReply {
 	var reply data.AddPlayerReply
 	log.Println("Add Player", request)
 	player := data.CreatePlayer(request.Name, request.Email, request.Admin, request.Password)
-	err := store.GetStore().AddPlayer(player)
+	err := store.GetStore().Player().AddPlayer(player)
 	if err != nil {
 		reply.Result.Code = data.EXISTS
 		return reply
@@ -42,7 +42,7 @@ func AddPlayer(request data.AddPlayerRequest) data.AddPlayerReply {
 // ImportPlayer Process the import player request
 func ImportPlayer(request data.ImportPlayerRequest) data.ImportPlayerReply {
 	var reply data.ImportPlayerReply
-	err := store.GetStore().AddPlayer(&request.Player)
+	err := store.GetStore().Player().AddPlayer(&request.Player)
 	if err != nil {
 		log.Println("Import Player Already exist")
 		reply.Result.Code = data.EXISTS

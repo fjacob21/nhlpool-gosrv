@@ -6,7 +6,7 @@ import (
 )
 
 func getLeague(ID string) *data.League {
-	league, _ := store.GetStore().GetLeague(ID)
+	league, _ := store.GetStore().League().GetLeague(ID)
 	return league
 }
 
@@ -41,7 +41,7 @@ func DeleteLeague(ID string, request data.DeleteLeagueRequest) data.DeleteLeague
 		reply.Result.Code = data.ACCESSDENIED
 		return reply
 	}
-	store.GetStore().DeleteLeague(league)
+	store.GetStore().League().DeleteLeague(league)
 	reply.Result.Code = data.SUCCESS
 	return reply
 }
