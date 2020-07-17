@@ -24,6 +24,8 @@ func main() {
 	} else if *command != "" {
 		if *command == "addleague" {
 			cmd.AddLeague(*data, *user, *password)
+		} else if *command == "importnhlteams" {
+			cmd.ImportNHLTeam(*user, *password)
 		}
 
 	} else {

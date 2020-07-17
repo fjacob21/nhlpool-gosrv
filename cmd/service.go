@@ -22,6 +22,8 @@ func Service() {
 
 	handler := &web.RegexpHandler{}
 
+	handler.HandleFunc("^/league/(.*)/team/$", web.HandleTeamsRequest)
+	handler.HandleFunc("^/league/(.*)/team/(.*)/$", web.HandleTeamRequest)
 	handler.HandleFunc("^/league/$", web.HandleLeaguesRequest)
 	handler.HandleFunc("^/league/(.*)/$", web.HandleLeagueRequest)
 	handler.HandleFunc("^/player/import/$", web.HandlePlayerImportRequest)

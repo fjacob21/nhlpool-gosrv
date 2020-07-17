@@ -7,6 +7,7 @@ type Store interface {
 	Session() SessionStore
 	League() LeagueStore
 	Venue() VenueStore
+	Team() TeamStore
 }
 
 var activeStore = NewMemoryStore()
