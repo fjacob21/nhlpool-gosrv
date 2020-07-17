@@ -7,6 +7,7 @@ type MemoryStore struct {
 	league  *MemoryStoreLeague
 	venue   *MemoryStoreVenue
 	team    *MemoryStoreTeam
+	season  *MemoryStoreSeason
 }
 
 // NewMemoryStore Create a new memory store
@@ -17,6 +18,7 @@ func NewMemoryStore() Store {
 	store.league = NewMemoryStoreLeague()
 	store.venue = NewMemoryStoreVenue()
 	store.team = NewMemoryStoreTeam()
+	store.season = NewMemoryStoreSeason()
 	return store
 }
 
@@ -27,6 +29,7 @@ func (ms *MemoryStore) Clean() error {
 	ms.league.Clean()
 	ms.venue.Clean()
 	ms.team.Clean()
+	ms.season.Clean()
 	return nil
 }
 
@@ -53,4 +56,9 @@ func (ms *MemoryStore) Venue() VenueStore {
 // Team Return the team store
 func (ms *MemoryStore) Team() TeamStore {
 	return ms.team
+}
+
+// Season Return the season store
+func (ms *MemoryStore) Season() SeasonStore {
+	return ms.season
 }
