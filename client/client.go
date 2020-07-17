@@ -159,10 +159,70 @@ func (c *Client) AddLeague(id string, name string, description string, website s
 		return err
 	}
 	defer res.Body.Close()
-	var addLeaguetReply data.AddLeagueReply
+	var addLeagueReply data.AddLeagueReply
 	bodyReply, _ := ioutil.ReadAll(res.Body)
-	json.Unmarshal(bodyReply, &addLeaguetReply)
-	if addLeaguetReply.Result.Code != 0 {
+	json.Unmarshal(bodyReply, &addLeagueReply)
+	if addLeagueReply.Result.Code != 0 {
+		return errors.New("Cannot Add")
+	}
+	return nil
+}
+
+// AddTeam add a team
+func (c *Client) AddTeam(
+	leagueID string,
+	id string,
+	abbreviation string,
+	name string,
+	fullname string,
+	city string,
+	active bool,
+	creationYear string,
+	website string,
+	venueID string,
+	venueCity string,
+	venueName string,
+	venueTimezone string,
+	venueAddress string,
+) error {
+	if c.sessionID == "" {
+		return errors.New("Need to be logged")
+	}
+	body := data.AddTeamRequest{}
+	body.ID = id
+	body.Abbreviation = abbreviation
+	body.Name = name
+	body.Fullname = fullname
+	body.City = city
+	body.Active = active
+	body.CreationYear = creationYear
+	body.Website = website
+	body.Venue.ID = venueID
+	body.Venue.City = venueCity
+	body.Venue.Name = venueName
+	body.Venue.Timezone = venueTimezone
+	body.Venue.Address = venueAddress
+
+	buf := new(bytes.Buffer)
+	json.NewEncoder(buf).Encode(body)
+
+	url := fmt.Sprintf("%v/league/%v/team/", c.url, leagueID)
+	req, err := http.NewRequest("POST", url, buf)
+	if err != nil {
+		return err
+	}
+
+	client := &http.Client{}
+	res, err := client.Do(req)
+
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+	var addTeamReply data.AddTeamReply
+	bodyReply, _ := ioutil.ReadAll(res.Body)
+	json.Unmarshal(bodyReply, &addTeamReply)
+	if addTeamReply.Result.Code != 0 {
 		return errors.New("Cannot Add")
 	}
 	return nil

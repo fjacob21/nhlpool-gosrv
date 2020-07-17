@@ -1,5 +1,11 @@
 package nhl
 
+import (
+	"fmt"
+
+	"nhlpool.com/service/go/nhlpool/data"
+)
+
 // GetTeamReply Is the struct returned by the get team request
 type GetTeamReply struct {
 	Teams []Team `json:"teams"`
@@ -52,4 +58,19 @@ type Team struct {
 	OfficialSiteURL string     `json:"officialSiteUrl"`
 	FranchiseID     int        `json:"franchiseId"`
 	Active          bool       `json:"active"`
+}
+
+// Convert Convert to data team
+func (t *Team) Convert() *data.Team {
+	team := &data.Team{}
+	team.ID = fmt.Sprintf("%d", t.ID)
+	team.Abbreviation = t.Abbreviation
+	team.Name = t.TeamName
+	team.Fullname = t.Name
+	team.City = *t.Venue.City
+	team.Active = t.Active
+	team.CreationYear = t.FirstYearOfPlay
+	team.Website = t.OfficialSiteURL
+	team.Venue = t.Venue.Convert()
+	return team
 }
