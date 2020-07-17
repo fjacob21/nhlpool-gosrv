@@ -8,6 +8,7 @@ type Store interface {
 	League() LeagueStore
 	Venue() VenueStore
 	Team() TeamStore
+	Season() SeasonStore
 }
 
 var activeStore = NewMemoryStore()

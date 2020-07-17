@@ -227,3 +227,39 @@ func (c *Client) AddTeam(
 	}
 	return nil
 }
+
+// AddSeason add a team
+func (c *Client) AddSeason(
+	leagueID string,
+	year int,
+) error {
+	if c.sessionID == "" {
+		return errors.New("Need to be logged")
+	}
+	body := data.AddSeasonRequest{}
+	body.Year = year
+
+	buf := new(bytes.Buffer)
+	json.NewEncoder(buf).Encode(body)
+
+	url := fmt.Sprintf("%v/league/%v/season/", c.url, leagueID)
+	req, err := http.NewRequest("POST", url, buf)
+	if err != nil {
+		return err
+	}
+
+	client := &http.Client{}
+	res, err := client.Do(req)
+
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+	var addSeasonReply data.AddSeasonReply
+	bodyReply, _ := ioutil.ReadAll(res.Body)
+	json.Unmarshal(bodyReply, &addSeasonReply)
+	if addSeasonReply.Result.Code != 0 {
+		return errors.New("Cannot Add")
+	}
+	return nil
+}
