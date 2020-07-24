@@ -22,31 +22,19 @@ func NewSqliteStoreTeam(database *sql.DB, store *SqliteStore) *SqliteStoreTeam {
 	return newStore
 }
 
-func (st *SqliteStoreTeam) tableExist(table string) bool {
-	row := st.database.QueryRow("SELECT name FROM sqlite_master WHERE type ='table' AND name=?", table)
-	var name string
-
-	if row != nil {
-		err := row.Scan(&name)
-		if err != nil {
-			return false
-		}
-		return name == table
-	}
-
-	return false
-}
-
 func (st *SqliteStoreTeam) createTables() error {
-	err := st.createTable()
-	if err != nil {
-		return err
+	if !st.store.tableExist("team") {
+		err := st.createTable()
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
 }
 
 func (st *SqliteStoreTeam) createTable() error {
+	fmt.Printf("createTable team\n")
 	statement, err := st.database.Prepare("CREATE TABLE IF NOT EXISTS team (id TEXT NOT NULL, league_id TEXT NOT NULL, abbreviation TEXT, name TEXT, fullname TEXT, city TEXT, active INTEGER, creation_year TEXT, website TEXT, venue_id TEXT, PRIMARY KEY(id,league_id))")
 	if err != nil {
 		fmt.Printf("createTable Prepare Err: %v\n", err)
@@ -61,6 +49,7 @@ func (st *SqliteStoreTeam) createTable() error {
 }
 
 func (st *SqliteStoreTeam) cleanTable() error {
+	fmt.Printf("cleanTable team\n")
 	statement, err := st.database.Prepare("DROP TABLE team")
 	if err != nil {
 		fmt.Printf("cleanTable Prepare Err: %v\n", err)
@@ -89,14 +78,17 @@ func (st *SqliteStoreTeam) Clean() error {
 
 // AddTeam Add a new venue
 func (st *SqliteStoreTeam) AddTeam(team *data.Team) error {
+	teams, _ := st.GetTeams(&team.League)
+	fmt.Printf("-->AddTeam %v\n", teams)
 	statement, err := st.database.Prepare("INSERT INTO team (id, league_id, abbreviation, name, fullname, city, active, creation_year, website, venue_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
 	if err != nil {
 		fmt.Printf("AddTeam Prepare Err: %v\n", err)
 		return err
 	}
-	_, err = statement.Exec(team.ID, team.League.ID, team.Abbreviation, team.Name, team.Fullname, team.City, team.Active, team.CreationYear, team.Website, team.Venue.ID)
+	_, err = statement.Exec(team.ID, team.League.ID, team.Abbreviation, team.Name, team.Fullname, team.City, 1, team.CreationYear, team.Website, team.Venue.ID)
 	if err != nil {
-		fmt.Printf("AddTeam Exec Err: %v\n", err)
+		teams, _ := st.GetTeams(&team.League)
+		fmt.Printf("AddTeam Exec teams:%v Err: %v\n", teams, err)
 		return err
 	}
 	return nil
@@ -215,5 +207,6 @@ func (st *SqliteStoreTeam) GetTeams(league *data.League) ([]data.Team, error) {
 
 		teams = append(teams, team)
 	}
+	rows.Close()
 	return teams, nil
 }

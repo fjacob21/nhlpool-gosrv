@@ -17,6 +17,7 @@ type SqliteStore struct {
 	venue    *SqliteStoreVenue
 	team     *SqliteStoreTeam
 	season   *SqliteStoreSeason
+	standing *SqliteStoreStanding
 }
 
 // NewSqliteStore Create a new memory store
@@ -36,7 +37,13 @@ func NewSqliteStore() Store {
 	store.venue = NewSqliteStoreVenue(store.database)
 	store.team = NewSqliteStoreTeam(store.database, store)
 	store.season = NewSqliteStoreSeason(store.database, store)
+	store.standing = NewSqliteStoreStanding(store.database, store)
 	return store
+}
+
+// Close the database
+func (st *SqliteStore) Close() error {
+	return st.database.Close()
 }
 
 // Player Return the player store
@@ -64,9 +71,14 @@ func (st *SqliteStore) Team() TeamStore {
 	return st.team
 }
 
-// Season Return the team store
+// Season Return the season store
 func (st *SqliteStore) Season() SeasonStore {
 	return st.season
+}
+
+// Standing Return the standing store
+func (st *SqliteStore) Standing() StandingStore {
+	return st.standing
 }
 
 // Clean Empty the store
@@ -75,7 +87,9 @@ func (st *SqliteStore) Clean() error {
 	errSession := st.session.Clean()
 	errLeague := st.league.Clean()
 	errVenue := st.venue.Clean()
+	errTeam := st.team.Clean()
 	errSeason := st.season.Clean()
+	errStanding := st.standing.Clean()
 	if errPlayer != nil {
 		return errPlayer
 	}
@@ -88,8 +102,30 @@ func (st *SqliteStore) Clean() error {
 	if errVenue != nil {
 		return errVenue
 	}
+	if errTeam != nil {
+		return errTeam
+	}
 	if errSeason != nil {
 		return errSeason
 	}
+	if errStanding != nil {
+		return errStanding
+	}
 	return nil
+}
+
+func (st *SqliteStore) tableExist(table string) bool {
+	row := st.database.QueryRow("SELECT name FROM sqlite_master WHERE type ='table' AND name=?", table)
+	var name string
+
+	if row != nil {
+		err := row.Scan(&name)
+		if err != nil {
+			fmt.Printf("tableExist Scan error Table:%v Err:%v\n", table, err)
+			return false
+		}
+		return name == table
+	}
+	fmt.Printf("tableExist empty Table:%v\n", table)
+	return false
 }

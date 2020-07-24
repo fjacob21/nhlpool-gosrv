@@ -1,8 +1,15 @@
 package nhl
 
+import (
+	"fmt"
+	"strconv"
+
+	"nhlpool.com/service/go/nhlpool/data"
+)
+
 // Standing Represent the standing for a year
 type Standing struct {
-	Conferences []StandingRecord `json:"records"`
+	Division []StandingRecord `json:"records"`
 }
 
 // StandingRecord Define the info for a standing record
@@ -60,4 +67,21 @@ type TeamRecord struct {
 	PpConferenceRank   string               `json:"ppConferenceRank"`
 	PpLeagueRank       string               `json:"ppLeagueRank"`
 	LastUpdated        string               `json:"lastUpdated"`
+}
+
+// Convert Convert to data team
+func (t *TeamRecord) Convert() *data.Standing {
+	team := data.Team{}
+	team.ID = fmt.Sprintf("%d", t.Team.ID)
+	standing := &data.Standing{}
+	standing.Team = team
+	standing.Points = t.Points
+	standing.Win = t.LeagueRecord.Wins
+	standing.Losses = t.LeagueRecord.Losses
+	standing.OT = t.LeagueRecord.OT
+	standing.GamesPlayed = t.GamesPlayed
+	standing.GoalsAgainst = t.GoalsAgainst
+	standing.GoalsScored = t.GoalsScored
+	standing.Ranks, _ = strconv.Atoi(t.ConferenceRank)
+	return standing
 }

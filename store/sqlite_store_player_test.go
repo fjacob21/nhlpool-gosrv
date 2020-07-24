@@ -10,6 +10,8 @@ import (
 
 func TestNewSqliteStoreAddPlayer(t *testing.T) {
 	store := NewSqliteStore()
+	defer store.Close()
+	store.Clean()
 	assert.NotNil(t, store, "Should not be nil")
 	player := data.CreatePlayer("name", "email", false, "password")
 	err := store.Player().AddPlayer(player)
@@ -26,6 +28,8 @@ func TestNewSqliteStoreAddPlayer(t *testing.T) {
 
 func TestNewSqliteStoreDoubleAddPlayer(t *testing.T) {
 	store := NewSqliteStore()
+	defer store.Close()
+	store.Clean()
 	assert.NotNil(t, store, "Should not be nil")
 	player := data.CreatePlayer("name", "email", false, "password")
 	err := store.Player().AddPlayer(player)
@@ -44,6 +48,8 @@ func TestNewSqliteStoreDoubleAddPlayer(t *testing.T) {
 
 func TestNewSqliteStoreGetPlayers(t *testing.T) {
 	store := NewSqliteStore()
+	defer store.Close()
+	store.Clean()
 	assert.NotNil(t, store, "Should not be nil")
 	player := data.CreatePlayer("name", "email", false, "password")
 	players, _ := store.Player().GetPlayers()
@@ -57,6 +63,8 @@ func TestNewSqliteStoreGetPlayers(t *testing.T) {
 
 func TestNewSqliteStoreUpdatePlayer(t *testing.T) {
 	store := NewSqliteStore()
+	defer store.Close()
+	store.Clean()
 	assert.NotNil(t, store, "Should not be nil")
 	player := data.CreatePlayer("name", "email", false, "password")
 	store.Player().AddPlayer(player)
@@ -74,8 +82,9 @@ func TestNewSqliteStoreUpdatePlayer(t *testing.T) {
 }
 
 func TestNewSqliteStoreUpdateInvalidPlayer(t *testing.T) {
-	fmt.Printf("Start\n")
 	store := NewSqliteStore()
+	defer store.Close()
+	store.Clean()
 	assert.NotNil(t, store, "Should not be nil")
 	player := data.CreatePlayer("name", "email", false, "password")
 	players, _ := store.Player().GetPlayers()
@@ -86,6 +95,8 @@ func TestNewSqliteStoreUpdateInvalidPlayer(t *testing.T) {
 
 func TestNewSqliteStoreDeletePlayer(t *testing.T) {
 	store := NewSqliteStore()
+	defer store.Close()
+	store.Clean()
 	assert.NotNil(t, store, "Should not be nil")
 	player := data.CreatePlayer("name", "email", false, "password")
 	store.Player().AddPlayer(player)
@@ -100,6 +111,8 @@ func TestNewSqliteStoreDeletePlayer(t *testing.T) {
 
 func TestNewSqliteStoreDeleteInvalidPlayer(t *testing.T) {
 	store := NewSqliteStore()
+	defer store.Close()
+	store.Clean()
 	assert.NotNil(t, store, "Should not be nil")
 	player := data.CreatePlayer("name", "email", false, "password")
 	err := store.Player().DeletePlayer(player)

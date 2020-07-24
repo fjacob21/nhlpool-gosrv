@@ -22,25 +22,12 @@ func NewSqliteStoreSeason(database *sql.DB, store *SqliteStore) *SqliteStoreSeas
 	return newStore
 }
 
-func (st *SqliteStoreSeason) tableExist(table string) bool {
-	row := st.database.QueryRow("SELECT name FROM sqlite_master WHERE type ='table' AND name=?", table)
-	var name string
-
-	if row != nil {
-		err := row.Scan(&name)
-		if err != nil {
-			return false
-		}
-		return name == table
-	}
-
-	return false
-}
-
 func (st *SqliteStoreSeason) createTables() error {
-	err := st.createTable()
-	if err != nil {
-		return err
+	if !st.store.tableExist("season") {
+		err := st.createTable()
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -130,7 +117,7 @@ func (st *SqliteStoreSeason) GetSeason(year int, league *data.League) (*data.Sea
 			return nil, err
 		}
 		season.Year = yearValue
-		season.League = *league
+		season.League = league
 
 		return season, nil
 	}
@@ -155,9 +142,10 @@ func (st *SqliteStoreSeason) GetSeasons(league *data.League) ([]data.Season, err
 			return nil, err
 		}
 		season.Year = year
-		season.League = *league
+		season.League = league
 
 		seasons = append(seasons, season)
 	}
+	rows.Close()
 	return seasons, nil
 }

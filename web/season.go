@@ -11,17 +11,17 @@ import (
 	"nhlpool.com/service/go/nhlpool/data"
 )
 
-func getSeasonInfo(r *http.Request) (string, string) {
+func getSeasonInfo(r *http.Request) (string, int) {
 	reg, _ := regexp.Compile(`/league/([^/]*)/season/([^/]*)/.*`)
 	results := reg.FindStringSubmatch(r.RequestURI)
-	return results[1], results[2]
+	year, _ := strconv.Atoi(results[2])
+	return results[1], year
 }
 
 // HandleSeasonRequest Handle the web request for league/<league>
 func HandleSeasonRequest(w http.ResponseWriter, r *http.Request) {
-	league, season := getSeasonInfo(r)
-	year, _ := strconv.Atoi(season)
-	log.Println("Season:", r.Method, league, season)
+	league, year := getSeasonInfo(r)
+	log.Println("Season:", r.Method, league, year)
 	switch r.Method {
 	case http.MethodGet:
 		handleSuccess(&w, controller.GetSeason(league, year))

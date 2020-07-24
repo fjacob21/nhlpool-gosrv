@@ -37,15 +37,17 @@ func (st *SqliteStoreLeague) tableExist(table string) bool {
 }
 
 func (st *SqliteStoreLeague) createTables() error {
-	err := st.createLeagueTable()
-	if err != nil {
-		return err
+	if !st.tableExist("league") {
+		err := st.createTable()
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
 }
 
-func (st *SqliteStoreLeague) createLeagueTable() error {
+func (st *SqliteStoreLeague) createTable() error {
 	statement, err := st.database.Prepare("CREATE TABLE IF NOT EXISTS league (id TEXT PRIMARY KEY, name TEXT, description TEXT, website TEXT)")
 	if err != nil {
 		fmt.Printf("createLeagueTable Prepare Err: %v\n", err)
@@ -56,26 +58,28 @@ func (st *SqliteStoreLeague) createLeagueTable() error {
 		fmt.Printf("createLeagueTable Exec Err: %v\n", err)
 		return err
 	}
+	fmt.Printf("createTable league\n")
 	return nil
 }
 
-func (st *SqliteStoreLeague) cleanLeagueTable() error {
+func (st *SqliteStoreLeague) cleanTable() error {
 	statement, err := st.database.Prepare("DROP TABLE league")
 	if err != nil {
-		fmt.Printf("cleanLeagueTable Prepare Err: %v\n", err)
+		fmt.Printf("cleanTable Prepare Err: %v\n", err)
 		return err
 	}
 	_, err = statement.Exec()
 	if err != nil {
-		fmt.Printf("cleanLeagueTable Exec Err: %v\n", err)
+		fmt.Printf("cleanTable Exec Err: %v\n", err)
 		return err
 	}
+	fmt.Printf("cleanTable league\n")
 	return nil
 }
 
 // Clean Empty the store
 func (st *SqliteStoreLeague) Clean() error {
-	errLeague := st.cleanLeagueTable()
+	errLeague := st.cleanTable()
 	errCreate := st.createTables()
 	if errLeague != nil {
 		return errLeague
@@ -98,6 +102,7 @@ func (st *SqliteStoreLeague) AddLeague(league *data.League) error {
 		fmt.Printf("AddLeague Exec Err: %v\n", err)
 		return err
 	}
+	fmt.Printf("AddLeague %v\n", league)
 	return nil
 }
 
@@ -166,7 +171,7 @@ func (st *SqliteStoreLeague) GetLeague(leagueID string) (*data.League, error) {
 // GetLeagues Get all leagues
 func (st *SqliteStoreLeague) GetLeagues() ([]data.League, error) {
 	var leagues []data.League
-	rows, err := st.database.Query("SELECT id, name, description, website FROM league ")
+	rows, err := st.database.Query("SELECT id, name, description, website FROM league")
 	if err != nil {
 		fmt.Printf("GetLeagues query Err: %v\n", err)
 		return []data.League{}, err
@@ -189,5 +194,6 @@ func (st *SqliteStoreLeague) GetLeagues() ([]data.League, error) {
 
 		leagues = append(leagues, league)
 	}
+	rows.Close()
 	return leagues, nil
 }

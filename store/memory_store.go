@@ -2,12 +2,13 @@ package store
 
 // MemoryStore Is a data store that keep it only in memory
 type MemoryStore struct {
-	player  *MemoryStorePlayer
-	session *MemoryStoreSession
-	league  *MemoryStoreLeague
-	venue   *MemoryStoreVenue
-	team    *MemoryStoreTeam
-	season  *MemoryStoreSeason
+	player   *MemoryStorePlayer
+	session  *MemoryStoreSession
+	league   *MemoryStoreLeague
+	venue    *MemoryStoreVenue
+	team     *MemoryStoreTeam
+	season   *MemoryStoreSeason
+	standing *MemoryStoreStanding
 }
 
 // NewMemoryStore Create a new memory store
@@ -19,7 +20,14 @@ func NewMemoryStore() Store {
 	store.venue = NewMemoryStoreVenue()
 	store.team = NewMemoryStoreTeam()
 	store.season = NewMemoryStoreSeason()
+	store.standing = NewMemoryStoreStanding()
 	return store
+}
+
+// Close the database
+func (ms *MemoryStore) Close() error {
+	ms.Clean()
+	return nil
 }
 
 // Clean Empty the store
@@ -30,6 +38,7 @@ func (ms *MemoryStore) Clean() error {
 	ms.venue.Clean()
 	ms.team.Clean()
 	ms.season.Clean()
+	ms.standing.Clean()
 	return nil
 }
 
@@ -61,4 +70,9 @@ func (ms *MemoryStore) Team() TeamStore {
 // Season Return the season store
 func (ms *MemoryStore) Season() SeasonStore {
 	return ms.season
+}
+
+// Standing Return the standing store
+func (ms *MemoryStore) Standing() StandingStore {
+	return ms.standing
 }

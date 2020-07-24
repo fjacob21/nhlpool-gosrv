@@ -64,7 +64,7 @@ func (c *NHLClient) GetStandings() (*nhl.Standing, error) {
 func (c *NHLClient) GetTeams() (map[int]*nhl.Team, error) {
 	standings, _ := c.GetStandings()
 	teams := make(map[int]*nhl.Team)
-	for _, record := range standings.Conferences {
+	for _, record := range standings.Division {
 		for _, team := range record.TeamRecords {
 			teamInfo, _ := c.GetTeam(team.Team.ID)
 			teams[team.Team.ID] = teamInfo

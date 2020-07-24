@@ -10,6 +10,8 @@ import (
 
 func TestNewSqliteStoreAddPSession(t *testing.T) {
 	store := NewSqliteStore()
+	defer store.Close()
+	store.Clean()
 	assert.NotNil(t, store, "Should not be nil")
 	player := data.CreatePlayer("name", "email", false, "password")
 	store.Player().AddPlayer(player)
@@ -27,6 +29,8 @@ func TestNewSqliteStoreAddPSession(t *testing.T) {
 
 func TestNewSqliteStoreDeleteSession(t *testing.T) {
 	store := NewSqliteStore()
+	defer store.Close()
+	store.Clean()
 	assert.NotNil(t, store, "Should not be nil")
 	player := data.CreatePlayer("name", "email", false, "password")
 	store.Player().AddPlayer(player)

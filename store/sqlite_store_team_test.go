@@ -9,6 +9,8 @@ import (
 
 func TestNewSqliteStoreAddTeam(t *testing.T) {
 	store := NewSqliteStore()
+	defer store.Close()
+	store.Clean()
 	assert.NotNil(t, store, "Should not be nil")
 	league := data.League{ID: "id", Name: "name", Description: "description", Website: "website"}
 	err := store.League().AddLeague(&league)
@@ -34,6 +36,8 @@ func TestNewSqliteStoreAddTeam(t *testing.T) {
 
 func TestNewSqliteStoreUpdateTeam(t *testing.T) {
 	store := NewSqliteStore()
+	defer store.Close()
+	store.Clean()
 	assert.NotNil(t, store, "Should not be nil")
 	league := data.League{ID: "id", Name: "name", Description: "description", Website: "website"}
 	err := store.League().AddLeague(&league)
@@ -68,6 +72,8 @@ func TestNewSqliteStoreUpdateTeam(t *testing.T) {
 
 func TestNewSqliteStoreDeleteTeam(t *testing.T) {
 	store := NewSqliteStore()
+	defer store.Close()
+	store.Clean()
 	assert.NotNil(t, store, "Should not be nil")
 	league := data.League{ID: "id", Name: "name", Description: "description", Website: "website"}
 	err := store.League().AddLeague(&league)
@@ -88,6 +94,8 @@ func TestNewSqliteStoreDeleteTeam(t *testing.T) {
 
 func TestNewSqliteStoreGetTeamss(t *testing.T) {
 	store := NewSqliteStore()
+	defer store.Close()
+	store.Clean()
 	assert.NotNil(t, store, "Should not be nil")
 	league := data.League{ID: "id", Name: "name", Description: "description", Website: "website"}
 	store.League().AddLeague(&league)

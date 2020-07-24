@@ -9,6 +9,8 @@ import (
 
 func TestNewSqliteStoreAddVenue(t *testing.T) {
 	store := NewSqliteStore()
+	defer store.Close()
+	store.Clean()
 	assert.NotNil(t, store, "Should not be nil")
 	league := data.League{ID: "id", Name: "name", Description: "description", Website: "website"}
 	err := store.League().AddLeague(&league)
@@ -27,6 +29,8 @@ func TestNewSqliteStoreAddVenue(t *testing.T) {
 
 func TestNewSqliteStoreUpdateVenue(t *testing.T) {
 	store := NewSqliteStore()
+	defer store.Close()
+	store.Clean()
 	assert.NotNil(t, store, "Should not be nil")
 	league := data.League{ID: "id", Name: "name", Description: "description", Website: "website"}
 	err := store.League().AddLeague(&league)
@@ -51,6 +55,7 @@ func TestNewSqliteStoreUpdateVenue(t *testing.T) {
 
 func TestNewSqliteStoreDeleteVenue(t *testing.T) {
 	store := NewSqliteStore()
+	store.Clean()
 	assert.NotNil(t, store, "Should not be nil")
 	league := data.League{ID: "id", Name: "name", Description: "description", Website: "website"}
 	err := store.League().AddLeague(&league)
