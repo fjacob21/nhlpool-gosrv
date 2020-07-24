@@ -38,14 +38,16 @@ func (st *SqliteStorePlayer) tableExist(table string) bool {
 }
 
 func (st *SqliteStorePlayer) createTables() error {
-	err := st.createPlayerTable()
-	if err != nil {
-		return err
+	if !st.tableExist("player") {
+		err := st.createTable()
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
 
-func (st *SqliteStorePlayer) createPlayerTable() error {
+func (st *SqliteStorePlayer) createTable() error {
 	statement, err := st.database.Prepare("CREATE TABLE IF NOT EXISTS player (id TEXT PRIMARY KEY, name TEXT, email TEXT, admin INTEGER, last_login TEXT, password TEXT)")
 	if err != nil {
 		fmt.Printf("createPlayerTable Prepare Err: %v\n", err)
@@ -59,7 +61,7 @@ func (st *SqliteStorePlayer) createPlayerTable() error {
 	return nil
 }
 
-func (st *SqliteStorePlayer) cleanPlayerTable() error {
+func (st *SqliteStorePlayer) cleanTable() error {
 	statement, err := st.database.Prepare("DROP TABLE player")
 	if err != nil {
 		fmt.Printf("cleanPlayerTable Prepare Err: %v\n", err)
@@ -75,7 +77,7 @@ func (st *SqliteStorePlayer) cleanPlayerTable() error {
 
 // Clean Empty the store
 func (st *SqliteStorePlayer) Clean() error {
-	errPlayer := st.cleanPlayerTable()
+	errPlayer := st.cleanTable()
 	errCreate := st.createTables()
 	if errPlayer != nil {
 		return errPlayer
@@ -124,6 +126,7 @@ func (st *SqliteStorePlayer) GetPlayers() ([]data.Player, error) {
 
 		players = append(players, player)
 	}
+	rows.Close()
 	return players, nil
 }
 

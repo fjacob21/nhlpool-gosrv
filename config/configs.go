@@ -31,6 +31,6 @@ func LoadConfigs() Configs {
 func loadDefaultConfig() Configs {
 	config := Configs{}
 	config.Port = 8080
-	config.DB = ":memory:"
+	config.DB = "file:unittest?mode=memory&cache=shared"
 	return config
 }

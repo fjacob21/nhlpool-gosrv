@@ -39,15 +39,17 @@ func (st *SqliteStoreSession) tableExist(table string) bool {
 }
 
 func (st *SqliteStoreSession) createTables() error {
-	err := st.createSessionTable()
-	if err != nil {
-		return err
+	if !st.tableExist("session") {
+		err := st.createTable()
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
 }
 
-func (st *SqliteStoreSession) createSessionTable() error {
+func (st *SqliteStoreSession) createTable() error {
 	statement, err := st.database.Prepare("CREATE TABLE IF NOT EXISTS session (id TEXT PRIMARY KEY, login_time TEXT, player_id TEXT)")
 	if err != nil {
 		fmt.Printf("createSessionTable Prepare Err: %v\n", err)
@@ -61,7 +63,7 @@ func (st *SqliteStoreSession) createSessionTable() error {
 	return nil
 }
 
-func (st *SqliteStoreSession) cleanSessionTable() error {
+func (st *SqliteStoreSession) cleanTable() error {
 	statement, err := st.database.Prepare("DROP TABLE session")
 	if err != nil {
 		fmt.Printf("cleanSessionTable Prepare Err: %v\n", err)
@@ -77,7 +79,7 @@ func (st *SqliteStoreSession) cleanSessionTable() error {
 
 // Clean Empty the store
 func (st *SqliteStoreSession) Clean() error {
-	errSession := st.cleanSessionTable()
+	errSession := st.cleanTable()
 	errCreate := st.createTables()
 	if errSession != nil {
 		return errSession

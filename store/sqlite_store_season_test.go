@@ -9,10 +9,12 @@ import (
 
 func TestNewSqliteStoreAddSeason(t *testing.T) {
 	store := NewSqliteStore()
+	defer store.Close()
+	store.Clean()
 	assert.NotNil(t, store, "Should not be nil")
 	league := data.League{ID: "id", Name: "name", Description: "description", Website: "website"}
 	err := store.League().AddLeague(&league)
-	season := &data.Season{Year: 2000, League: league}
+	season := &data.Season{Year: 2000, League: &league}
 	err = store.Season().AddSeason(season)
 	assert.NoError(t, err, "Should not have error")
 	getSeason, err := store.Season().GetSeason(season.Year, &league)
@@ -24,10 +26,12 @@ func TestNewSqliteStoreAddSeason(t *testing.T) {
 
 func TestNewSqliteStoreDeleteSeason(t *testing.T) {
 	store := NewSqliteStore()
+	defer store.Close()
+	store.Clean()
 	assert.NotNil(t, store, "Should not be nil")
 	league := data.League{ID: "id", Name: "name", Description: "description", Website: "website"}
 	err := store.League().AddLeague(&league)
-	season := &data.Season{Year: 2000, League: league}
+	season := &data.Season{Year: 2000, League: &league}
 	err = store.Season().AddSeason(season)
 	assert.NoError(t, err, "Should not have error")
 	getSeason, err := store.Season().GetSeason(season.Year, &league)
@@ -42,13 +46,15 @@ func TestNewSqliteStoreDeleteSeason(t *testing.T) {
 
 func TestNewSqliteStoreGetSeasons(t *testing.T) {
 	store := NewSqliteStore()
+	defer store.Close()
+	store.Clean()
 	assert.NotNil(t, store, "Should not be nil")
 	league := data.League{ID: "id", Name: "name", Description: "description", Website: "website"}
 	err := store.League().AddLeague(&league)
 	seasons, _ := store.Season().GetSeasons(&league)
 	assert.Equal(t, len(seasons), 0, "There should not have any team")
 
-	season := &data.Season{Year: 2000, League: league}
+	season := &data.Season{Year: 2000, League: &league}
 	err = store.Season().AddSeason(season)
 	assert.NoError(t, err, "Should not have error")
 

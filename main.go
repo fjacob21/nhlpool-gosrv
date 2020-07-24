@@ -30,6 +30,8 @@ func main() {
 			cmd.ImportNHLTeam(*user, *password)
 		} else if *command == "addseason" {
 			cmd.AddSeason(*league, *year, *user, *password)
+		} else if *command == "importnhlstanding" {
+			cmd.ImportNHLStanding(*year, *user, *password)
 		}
 
 	} else {

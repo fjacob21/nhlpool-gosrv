@@ -2,6 +2,7 @@ package store
 
 // Store interface of data storage object
 type Store interface {
+	Close() error
 	Clean() error
 	Player() Player
 	Session() SessionStore
@@ -9,6 +10,7 @@ type Store interface {
 	Venue() VenueStore
 	Team() TeamStore
 	Season() SeasonStore
+	Standing() StandingStore
 }
 
 var activeStore = NewMemoryStore()

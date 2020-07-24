@@ -37,9 +37,11 @@ func (st *SqliteStoreVenue) tableExist(table string) bool {
 }
 
 func (st *SqliteStoreVenue) createTables() error {
-	err := st.createTable()
-	if err != nil {
-		return err
+	if !st.tableExist("venue") {
+		err := st.createTable()
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

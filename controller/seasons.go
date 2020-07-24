@@ -22,7 +22,7 @@ func AddSeason(leagueID string, request data.AddSeasonRequest) data.AddSeasonRep
 	var reply data.AddSeasonReply
 	log.Println("Add Season", request)
 	league := getLeague(leagueID)
-	season := &data.Season{Year: request.Year, League: *league}
+	season := &data.Season{Year: request.Year, League: league}
 
 	err := store.GetStore().Season().AddSeason(season)
 	if err != nil {
