@@ -19,9 +19,13 @@ type Venue struct {
 func (t *Venue) Convert() *data.Venue {
 	venue := &data.Venue{}
 	venue.ID = fmt.Sprintf("%d", t.ID)
-	venue.City = *t.City
+	if t.City != nil {
+		venue.City = *t.City
+	}
 	venue.Name = t.Name
-	venue.Timezone = t.TimeZone.ID
+	if t.TimeZone != nil {
+		venue.Timezone = t.TimeZone.ID
+	}
 	venue.Address = ""
 	return venue
 }

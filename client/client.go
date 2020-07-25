@@ -316,3 +316,52 @@ func (c *Client) AddStanding(
 	}
 	return nil
 }
+
+// AddGame add a game
+func (c *Client) AddGame(
+	leagueID string,
+	year int,
+	home string,
+	away string,
+	date string,
+	gameType int,
+	state int,
+	homeGoal int,
+	awayGoal int,
+) error {
+	if c.sessionID == "" {
+		return errors.New("Need to be logged")
+	}
+	body := data.AddGameRequest{}
+	body.HomeID = home
+	body.AwayID = away
+	body.Date = date
+	body.Type = gameType
+	body.State = state
+	body.HomeGoal = homeGoal
+	body.AwayGoal = awayGoal
+
+	buf := new(bytes.Buffer)
+	json.NewEncoder(buf).Encode(body)
+
+	url := fmt.Sprintf("%v/league/%v/season/%v/game/", c.url, leagueID, year)
+	req, err := http.NewRequest("POST", url, buf)
+	if err != nil {
+		return err
+	}
+
+	client := &http.Client{}
+	res, err := client.Do(req)
+
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+	var addStandingReply data.AddStandingReply
+	bodyReply, _ := ioutil.ReadAll(res.Body)
+	json.Unmarshal(bodyReply, &addStandingReply)
+	if addStandingReply.Result.Code != 0 {
+		return errors.New("Cannot Add")
+	}
+	return nil
+}

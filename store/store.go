@@ -11,6 +11,7 @@ type Store interface {
 	Team() TeamStore
 	Season() SeasonStore
 	Standing() StandingStore
+	Game() GameStore
 }
 
 var activeStore = NewMemoryStore()

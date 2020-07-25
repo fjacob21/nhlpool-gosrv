@@ -67,7 +67,9 @@ func (t *Team) Convert() *data.Team {
 	team.Abbreviation = t.Abbreviation
 	team.Name = t.TeamName
 	team.Fullname = t.Name
-	team.City = *t.Venue.City
+	if t.Venue.City != nil {
+		team.City = *t.Venue.City
+	}
 	team.Active = t.Active
 	team.CreationYear = t.FirstYearOfPlay
 	team.Website = t.OfficialSiteURL
