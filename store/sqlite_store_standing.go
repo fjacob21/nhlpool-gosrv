@@ -35,7 +35,7 @@ func (st *SqliteStoreStanding) createTables() error {
 
 func (st *SqliteStoreStanding) createTable() error {
 	statement, err := st.database.Prepare(`CREATE TABLE IF NOT EXISTS standing
-	(league_id TEXT NOT NULL, season_year TEXT NOT NULL, team_id TEXT NOT NULL, points INTEGER,
+	(league_id TEXT NOT NULL, season_year INTEGER NOT NULL, team_id TEXT NOT NULL, points INTEGER,
 		win INTEGER, losses INTEGER, ot INTEGER, games_played INTEGER, goals_against INTEGER, goals_scored INTEGER,
 		ranks INTEGER, PRIMARY KEY(league_id, season_year, team_id))`)
 	if err != nil {
