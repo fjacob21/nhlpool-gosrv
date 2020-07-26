@@ -76,7 +76,29 @@ func (ms *MemoryStoreGame) GetGames(league *data.League, season *data.Season, ho
 }
 
 // GetSeasonGames Get all games
-func (ms *MemoryStoreGame) GetSeasonGames(league *data.League, season *data.Season) ([]data.Game, error) {
+func (ms *MemoryStoreGame) GetSeasonGames(league *data.League, season *data.Season, home *data.Team, away *data.Team) ([]data.Game, error) {
+	var games []data.Game
+	for _, game := range ms.games {
+		if game.League.ID == league.ID && game.Season.Year == season.Year && game.Home.ID == home.ID && game.Away.ID == away.ID && game.Type == data.GameTypeRegular {
+			games = append(games, *game)
+		}
+	}
+	return games, nil
+}
+
+// GetPlayoffGames Get all games
+func (ms *MemoryStoreGame) GetPlayoffGames(league *data.League, season *data.Season, home *data.Team, away *data.Team) ([]data.Game, error) {
+	var games []data.Game
+	for _, game := range ms.games {
+		if game.League.ID == league.ID && game.Season.Year == season.Year && game.Home.ID == home.ID && game.Away.ID == away.ID && game.Type == data.GameTypePlayoff {
+			games = append(games, *game)
+		}
+	}
+	return games, nil
+}
+
+// GetAllGames Get all games
+func (ms *MemoryStoreGame) GetAllGames(league *data.League, season *data.Season) ([]data.Game, error) {
 	var games []data.Game
 	for _, game := range ms.games {
 		if game.League.ID == league.ID && game.Season.Year == season.Year {

@@ -19,6 +19,7 @@ type SqliteStore struct {
 	season   *SqliteStoreSeason
 	standing *SqliteStoreStanding
 	game     *SqliteStoreGame
+	matchup  *SqliteStoreMatchup
 }
 
 // NewSqliteStore Create a new memory store
@@ -40,6 +41,7 @@ func NewSqliteStore() Store {
 	store.season = NewSqliteStoreSeason(store.database, store)
 	store.standing = NewSqliteStoreStanding(store.database, store)
 	store.game = NewSqliteStoreGame(store.database, store)
+	store.matchup = NewSqliteStoreMatchup(store.database, store)
 	return store
 }
 
@@ -88,6 +90,11 @@ func (st *SqliteStore) Game() GameStore {
 	return st.game
 }
 
+// Matchup Return the matchup store
+func (st *SqliteStore) Matchup() MatchupStore {
+	return st.matchup
+}
+
 // Clean Empty the store
 func (st *SqliteStore) Clean() error {
 	errPlayer := st.player.Clean()
@@ -98,6 +105,7 @@ func (st *SqliteStore) Clean() error {
 	errSeason := st.season.Clean()
 	errStanding := st.standing.Clean()
 	errGame := st.game.Clean()
+	errMatchup := st.matchup.Clean()
 	if errPlayer != nil {
 		return errPlayer
 	}
@@ -121,6 +129,9 @@ func (st *SqliteStore) Clean() error {
 	}
 	if errGame != nil {
 		return errGame
+	}
+	if errMatchup != nil {
+		return errMatchup
 	}
 	return nil
 }
