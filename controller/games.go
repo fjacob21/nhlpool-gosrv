@@ -15,7 +15,7 @@ func GetGames(leagueID string, year int) data.GetGamesReply {
 	log.Println("Get Games")
 	var reply data.GetGamesReply
 	reply.Result.Code = data.SUCCESS
-	reply.Games, _ = store.GetStore().Game().GetSeasonGames(getLeague(leagueID), getSeason(year, getLeague(leagueID)))
+	reply.Games, _ = store.GetStore().Game().GetAllGames(getLeague(leagueID), getSeason(year, getLeague(leagueID)))
 	return reply
 }
 
