@@ -11,6 +11,7 @@ type MemoryStore struct {
 	standing *MemoryStoreStanding
 	game     *MemoryStoreGame
 	matchup  *MemoryStoreMatchup
+	winner   *MemoryStoreWinner
 }
 
 // NewMemoryStore Create a new memory store
@@ -25,6 +26,7 @@ func NewMemoryStore() Store {
 	store.standing = NewMemoryStoreStanding()
 	store.game = NewMemoryStoreGame()
 	store.matchup = NewMemoryStoreMatchup(store)
+	store.winner = NewMemoryStoreWinner()
 	return store
 }
 
@@ -45,6 +47,7 @@ func (ms *MemoryStore) Clean() error {
 	ms.standing.Clean()
 	ms.game.Clean()
 	ms.matchup.Clean()
+	ms.winner.Clean()
 	return nil
 }
 
@@ -91,4 +94,9 @@ func (ms *MemoryStore) Game() GameStore {
 // Matchup Return the matchup store
 func (ms *MemoryStore) Matchup() MatchupStore {
 	return ms.matchup
+}
+
+// Winner Return the winner store
+func (ms *MemoryStore) Winner() WinnerStore {
+	return ms.winner
 }
