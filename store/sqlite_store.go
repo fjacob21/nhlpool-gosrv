@@ -10,17 +10,18 @@ import (
 
 // SqliteStore Is a data store that keep it in Sqlite
 type SqliteStore struct {
-	database *sql.DB
-	player   *SqliteStorePlayer
-	session  *SqliteStoreSession
-	league   *SqliteStoreLeague
-	venue    *SqliteStoreVenue
-	team     *SqliteStoreTeam
-	season   *SqliteStoreSeason
-	standing *SqliteStoreStanding
-	game     *SqliteStoreGame
-	matchup  *SqliteStoreMatchup
-	winner   *SqliteStoreWinner
+	database   *sql.DB
+	player     *SqliteStorePlayer
+	session    *SqliteStoreSession
+	league     *SqliteStoreLeague
+	venue      *SqliteStoreVenue
+	team       *SqliteStoreTeam
+	season     *SqliteStoreSeason
+	standing   *SqliteStoreStanding
+	game       *SqliteStoreGame
+	matchup    *SqliteStoreMatchup
+	winner     *SqliteStoreWinner
+	prediction *SqliteStorePrediction
 }
 
 // NewSqliteStore Create a new memory store
@@ -44,6 +45,7 @@ func NewSqliteStore() Store {
 	store.game = NewSqliteStoreGame(store.database, store)
 	store.matchup = NewSqliteStoreMatchup(store.database, store)
 	store.winner = NewSqliteStoreWinner(store.database, store)
+	store.prediction = NewSqliteStorePrediction(store.database, store)
 	return store
 }
 
@@ -102,6 +104,11 @@ func (st *SqliteStore) Winner() WinnerStore {
 	return st.winner
 }
 
+// Prediction Return the prediction store
+func (st *SqliteStore) Prediction() PredictionStore {
+	return st.prediction
+}
+
 // Clean Empty the store
 func (st *SqliteStore) Clean() error {
 	errPlayer := st.player.Clean()
@@ -114,6 +121,7 @@ func (st *SqliteStore) Clean() error {
 	errGame := st.game.Clean()
 	errMatchup := st.matchup.Clean()
 	errWinner := st.winner.Clean()
+	errPrediction := st.prediction.Clean()
 	if errPlayer != nil {
 		return errPlayer
 	}
@@ -143,6 +151,9 @@ func (st *SqliteStore) Clean() error {
 	}
 	if errWinner != nil {
 		return errWinner
+	}
+	if errPrediction != nil {
+		return errPrediction
 	}
 	return nil
 }
