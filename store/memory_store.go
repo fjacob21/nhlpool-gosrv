@@ -2,16 +2,17 @@ package store
 
 // MemoryStore Is a data store that keep it only in memory
 type MemoryStore struct {
-	player   *MemoryStorePlayer
-	session  *MemoryStoreSession
-	league   *MemoryStoreLeague
-	venue    *MemoryStoreVenue
-	team     *MemoryStoreTeam
-	season   *MemoryStoreSeason
-	standing *MemoryStoreStanding
-	game     *MemoryStoreGame
-	matchup  *MemoryStoreMatchup
-	winner   *MemoryStoreWinner
+	player     *MemoryStorePlayer
+	session    *MemoryStoreSession
+	league     *MemoryStoreLeague
+	venue      *MemoryStoreVenue
+	team       *MemoryStoreTeam
+	season     *MemoryStoreSeason
+	standing   *MemoryStoreStanding
+	game       *MemoryStoreGame
+	matchup    *MemoryStoreMatchup
+	winner     *MemoryStoreWinner
+	prediction *MemoryStorePrediction
 }
 
 // NewMemoryStore Create a new memory store
@@ -27,6 +28,7 @@ func NewMemoryStore() Store {
 	store.game = NewMemoryStoreGame()
 	store.matchup = NewMemoryStoreMatchup(store)
 	store.winner = NewMemoryStoreWinner()
+	store.prediction = NewMemoryStorePrediction()
 	return store
 }
 
@@ -48,6 +50,7 @@ func (ms *MemoryStore) Clean() error {
 	ms.game.Clean()
 	ms.matchup.Clean()
 	ms.winner.Clean()
+	ms.prediction.Clean()
 	return nil
 }
 
@@ -99,4 +102,9 @@ func (ms *MemoryStore) Matchup() MatchupStore {
 // Winner Return the winner store
 func (ms *MemoryStore) Winner() WinnerStore {
 	return ms.winner
+}
+
+// Prediction Return the prediction store
+func (ms *MemoryStore) Prediction() PredictionStore {
+	return ms.prediction
 }
