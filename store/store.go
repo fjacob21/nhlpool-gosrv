@@ -13,6 +13,7 @@ type Store interface {
 	Standing() StandingStore
 	Game() GameStore
 	Matchup() MatchupStore
+	Winner() WinnerStore
 }
 
 var activeStore = NewMemoryStore()
