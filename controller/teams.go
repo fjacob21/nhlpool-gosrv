@@ -35,7 +35,13 @@ func AddTeam(leagueID string, request data.AddTeamRequest) data.AddTeamReply {
 		venue.Address = request.Venue.Address
 		store.GetStore().Venue().UpdateVenue(venue)
 	}
-	team := &data.Team{ID: request.ID, League: *getLeague(leagueID), Abbreviation: request.Abbreviation, Name: request.Name, Fullname: request.Fullname, City: request.City, Active: request.Active, CreationYear: request.CreationYear, Website: request.Website, Venue: venue}
+	conference, _ := store.GetStore().Conference().GetConference(request.Conference.ID, league)
+	if conference == nil {
+		conference = &data.Conference{ID: request.Conference.ID, League: *league, Name: request.Conference.Name}
+		fmt.Printf("Add conference %v\n", conference)
+		store.GetStore().Conference().AddConference(conference)
+	}
+	team := &data.Team{ID: request.ID, League: *getLeague(leagueID), Abbreviation: request.Abbreviation, Name: request.Name, Fullname: request.Fullname, City: request.City, Active: request.Active, CreationYear: request.CreationYear, Website: request.Website, Venue: venue, Conference: conference}
 
 	err := store.GetStore().Team().AddTeam(team)
 	if err != nil {

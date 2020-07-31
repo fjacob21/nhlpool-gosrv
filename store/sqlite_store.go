@@ -22,6 +22,7 @@ type SqliteStore struct {
 	matchup    *SqliteStoreMatchup
 	winner     *SqliteStoreWinner
 	prediction *SqliteStorePrediction
+	conference *SqliteStoreConference
 }
 
 // NewSqliteStore Create a new memory store
@@ -46,6 +47,7 @@ func NewSqliteStore() Store {
 	store.matchup = NewSqliteStoreMatchup(store.database, store)
 	store.winner = NewSqliteStoreWinner(store.database, store)
 	store.prediction = NewSqliteStorePrediction(store.database, store)
+	store.conference = NewSqliteStoreConference(store.database, store)
 	return store
 }
 
@@ -109,6 +111,11 @@ func (st *SqliteStore) Prediction() PredictionStore {
 	return st.prediction
 }
 
+// Conference Return the conference store
+func (st *SqliteStore) Conference() ConferenceStore {
+	return st.conference
+}
+
 // Clean Empty the store
 func (st *SqliteStore) Clean() error {
 	errPlayer := st.player.Clean()
@@ -122,6 +129,7 @@ func (st *SqliteStore) Clean() error {
 	errMatchup := st.matchup.Clean()
 	errWinner := st.winner.Clean()
 	errPrediction := st.prediction.Clean()
+	errConference := st.conference.Clean()
 	if errPlayer != nil {
 		return errPlayer
 	}
@@ -154,6 +162,9 @@ func (st *SqliteStore) Clean() error {
 	}
 	if errPrediction != nil {
 		return errPrediction
+	}
+	if errConference != nil {
+		return errConference
 	}
 	return nil
 }

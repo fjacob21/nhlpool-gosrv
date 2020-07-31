@@ -13,6 +13,7 @@ type MemoryStore struct {
 	matchup    *MemoryStoreMatchup
 	winner     *MemoryStoreWinner
 	prediction *MemoryStorePrediction
+	conference *MemoryStoreConference
 }
 
 // NewMemoryStore Create a new memory store
@@ -29,6 +30,7 @@ func NewMemoryStore() Store {
 	store.matchup = NewMemoryStoreMatchup(store)
 	store.winner = NewMemoryStoreWinner()
 	store.prediction = NewMemoryStorePrediction()
+	store.conference = NewMemoryStoreConference()
 	return store
 }
 
@@ -51,6 +53,7 @@ func (ms *MemoryStore) Clean() error {
 	ms.matchup.Clean()
 	ms.winner.Clean()
 	ms.prediction.Clean()
+	ms.conference.Clean()
 	return nil
 }
 
@@ -107,4 +110,9 @@ func (ms *MemoryStore) Winner() WinnerStore {
 // Prediction Return the prediction store
 func (ms *MemoryStore) Prediction() PredictionStore {
 	return ms.prediction
+}
+
+// Conference Return the conference store
+func (ms *MemoryStore) Conference() ConferenceStore {
+	return ms.conference
 }

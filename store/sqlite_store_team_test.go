@@ -14,9 +14,11 @@ func TestNewSqliteStoreAddTeam(t *testing.T) {
 	assert.NotNil(t, store, "Should not be nil")
 	league := data.League{ID: "id", Name: "name", Description: "description", Website: "website"}
 	err := store.League().AddLeague(&league)
+	conference := &data.Conference{ID: "id", League: league, Name: "name"}
+	err = store.Conference().AddConference(conference)
 	venue := &data.Venue{ID: "id", League: league, City: "city", Name: "name", Timezone: "timezone", Address: "address"}
 	err = store.Venue().AddVenue(venue)
-	team := &data.Team{ID: "id", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: venue}
+	team := &data.Team{ID: "id", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: venue, Conference: conference}
 	err = store.Team().AddTeam(team)
 	assert.NoError(t, err, "Should not have error")
 	getTeam, err := store.Team().GetTeam(venue.ID, &league)
@@ -41,9 +43,11 @@ func TestNewSqliteStoreUpdateTeam(t *testing.T) {
 	assert.NotNil(t, store, "Should not be nil")
 	league := data.League{ID: "id", Name: "name", Description: "description", Website: "website"}
 	err := store.League().AddLeague(&league)
+	conference := &data.Conference{ID: "id", League: league, Name: "name"}
+	err = store.Conference().AddConference(conference)
 	venue := &data.Venue{ID: "id", League: league, City: "city", Name: "name", Timezone: "timezone", Address: "address"}
 	err = store.Venue().AddVenue(venue)
-	team := &data.Team{ID: "id", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: venue}
+	team := &data.Team{ID: "id", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: venue, Conference: conference}
 	err = store.Team().AddTeam(team)
 	assert.NoError(t, err, "Should not have error")
 	team.Abbreviation = "abbreviation2"
@@ -77,9 +81,11 @@ func TestNewSqliteStoreDeleteTeam(t *testing.T) {
 	assert.NotNil(t, store, "Should not be nil")
 	league := data.League{ID: "id", Name: "name", Description: "description", Website: "website"}
 	err := store.League().AddLeague(&league)
+	conference := &data.Conference{ID: "id", League: league, Name: "name"}
+	err = store.Conference().AddConference(conference)
 	venue := &data.Venue{ID: "id", League: league, City: "city", Name: "name", Timezone: "timezone", Address: "address"}
 	err = store.Venue().AddVenue(venue)
-	team := &data.Team{ID: "id", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: venue}
+	team := &data.Team{ID: "id", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: venue, Conference: conference}
 	err = store.Team().AddTeam(team)
 	assert.NoError(t, err, "Should not have error")
 	getTeam, err := store.Team().GetTeam(venue.ID, &league)
@@ -99,13 +105,15 @@ func TestNewSqliteStoreGetTeamss(t *testing.T) {
 	assert.NotNil(t, store, "Should not be nil")
 	league := data.League{ID: "id", Name: "name", Description: "description", Website: "website"}
 	store.League().AddLeague(&league)
+	conference := &data.Conference{ID: "id", League: league, Name: "name"}
+	err := store.Conference().AddConference(conference)
 	venue := &data.Venue{ID: "id", League: league, City: "city", Name: "name", Timezone: "timezone", Address: "address"}
 	store.Venue().AddVenue(venue)
 	teams, _ := store.Team().GetTeams(&league)
 	assert.Equal(t, len(teams), 0, "There should not have any team")
 
-	team := &data.Team{ID: "id", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: venue}
-	err := store.Team().AddTeam(team)
+	team := &data.Team{ID: "id", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: venue, Conference: conference}
+	err = store.Team().AddTeam(team)
 	assert.NoError(t, err, "Should not have error")
 
 	teams, _ = store.Team().GetTeams(&league)
