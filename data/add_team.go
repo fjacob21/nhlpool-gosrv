@@ -7,6 +7,13 @@ type AddTeamConference struct {
 	Name   string `json:"name"`
 }
 
+// AddTeamDivision Define the information about a team division
+type AddTeamDivision struct {
+	ID     string `json:"id"`
+	League League `json:"league"`
+	Name   string `json:"name"`
+}
+
 // AddTeamVenue Define the information about a team venue
 type AddTeamVenue struct {
 	ID       string `json:"id"`
@@ -29,6 +36,7 @@ type AddTeamRequest struct {
 	Website      string            `json:"website"`
 	Venue        AddTeamVenue      `json:"venue"`
 	Conference   AddTeamConference `json:"conference"`
+	Division     AddTeamDivision   `json:"division"`
 }
 
 // AddTeamReply Is the reply to an add team request

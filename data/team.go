@@ -13,4 +13,5 @@ type Team struct {
 	Website      string      `json:"website"`
 	Venue        *Venue      `json:"venue"`
 	Conference   *Conference `json:"conference"`
+	Division     *Division   `json:"division"`
 }

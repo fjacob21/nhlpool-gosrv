@@ -14,6 +14,7 @@ type MemoryStore struct {
 	winner     *MemoryStoreWinner
 	prediction *MemoryStorePrediction
 	conference *MemoryStoreConference
+	division   *MemoryStoreDivision
 }
 
 // NewMemoryStore Create a new memory store
@@ -31,6 +32,7 @@ func NewMemoryStore() Store {
 	store.winner = NewMemoryStoreWinner()
 	store.prediction = NewMemoryStorePrediction()
 	store.conference = NewMemoryStoreConference()
+	store.division = NewMemoryStoreDivision()
 	return store
 }
 
@@ -54,6 +56,7 @@ func (ms *MemoryStore) Clean() error {
 	ms.winner.Clean()
 	ms.prediction.Clean()
 	ms.conference.Clean()
+	ms.division.Clean()
 	return nil
 }
 
@@ -115,4 +118,9 @@ func (ms *MemoryStore) Prediction() PredictionStore {
 // Conference Return the conference store
 func (ms *MemoryStore) Conference() ConferenceStore {
 	return ms.conference
+}
+
+// Division Return the division store
+func (ms *MemoryStore) Division() DivisionStore {
+	return ms.division
 }

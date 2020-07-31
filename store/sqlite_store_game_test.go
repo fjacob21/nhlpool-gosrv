@@ -19,14 +19,16 @@ func TestNewSqliteStoreAddGame(t *testing.T) {
 	err = store.Season().AddSeason(season)
 	conference := &data.Conference{ID: "id", League: league, Name: "name"}
 	err = store.Conference().AddConference(conference)
+	division := &data.Division{ID: "id", League: league, Name: "name"}
+	err = store.Division().AddDivision(division)
 	homeVenue := &data.Venue{ID: "homeid", League: league, City: "city", Name: "name", Timezone: "timezone", Address: "address"}
 	err = store.Venue().AddVenue(homeVenue)
-	homeTeam := &data.Team{ID: "homeid", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: homeVenue, Conference: conference}
+	homeTeam := &data.Team{ID: "homeid", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: homeVenue, Conference: conference, Division: division}
 	err = store.Team().AddTeam(homeTeam)
 	assert.NoError(t, err, "Should not have error")
 	awayVenue := &data.Venue{ID: "awayid", League: league, City: "city", Name: "name", Timezone: "timezone", Address: "address"}
 	err = store.Venue().AddVenue(awayVenue)
-	awayTeam := &data.Team{ID: "awayid", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: awayVenue, Conference: conference}
+	awayTeam := &data.Team{ID: "awayid", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: awayVenue, Conference: conference, Division: division}
 	err = store.Team().AddTeam(awayTeam)
 	assert.NoError(t, err, "Should not have error")
 	date := time.Now()
@@ -58,14 +60,16 @@ func TestNewSqliteStoreUpdateGame(t *testing.T) {
 	err = store.Season().AddSeason(season)
 	conference := &data.Conference{ID: "id", League: league, Name: "name"}
 	err = store.Conference().AddConference(conference)
+	division := &data.Division{ID: "id", League: league, Name: "name"}
+	err = store.Division().AddDivision(division)
 	homeVenue := &data.Venue{ID: "homeid", League: league, City: "city", Name: "name", Timezone: "timezone", Address: "address"}
 	err = store.Venue().AddVenue(homeVenue)
-	homeTeam := &data.Team{ID: "homeid", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: homeVenue, Conference: conference}
+	homeTeam := &data.Team{ID: "homeid", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: homeVenue, Conference: conference, Division: division}
 	err = store.Team().AddTeam(homeTeam)
 	assert.NoError(t, err, "Should not have error")
 	awayVenue := &data.Venue{ID: "awayid", League: league, City: "city", Name: "name", Timezone: "timezone", Address: "address"}
 	err = store.Venue().AddVenue(awayVenue)
-	awayTeam := &data.Team{ID: "awayid", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: awayVenue, Conference: conference}
+	awayTeam := &data.Team{ID: "awayid", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: awayVenue, Conference: conference, Division: division}
 	err = store.Team().AddTeam(awayTeam)
 	assert.NoError(t, err, "Should not have error")
 	date := time.Now()
@@ -101,14 +105,16 @@ func TestNewSqliteStoreDeleteGame(t *testing.T) {
 	err = store.Season().AddSeason(season)
 	conference := &data.Conference{ID: "id", League: league, Name: "name"}
 	err = store.Conference().AddConference(conference)
+	division := &data.Division{ID: "id", League: league, Name: "name"}
+	err = store.Division().AddDivision(division)
 	homeVenue := &data.Venue{ID: "homeid", League: league, City: "city", Name: "name", Timezone: "timezone", Address: "address"}
 	err = store.Venue().AddVenue(homeVenue)
-	homeTeam := &data.Team{ID: "homeid", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: homeVenue, Conference: conference}
+	homeTeam := &data.Team{ID: "homeid", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: homeVenue, Conference: conference, Division: division}
 	err = store.Team().AddTeam(homeTeam)
 	assert.NoError(t, err, "Should not have error")
 	awayVenue := &data.Venue{ID: "awayid", League: league, City: "city", Name: "name", Timezone: "timezone", Address: "address"}
 	err = store.Venue().AddVenue(awayVenue)
-	awayTeam := &data.Team{ID: "awayid", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: awayVenue, Conference: conference}
+	awayTeam := &data.Team{ID: "awayid", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: awayVenue, Conference: conference, Division: division}
 	err = store.Team().AddTeam(awayTeam)
 	assert.NoError(t, err, "Should not have error")
 	date := time.Now()
@@ -136,14 +142,16 @@ func TestNewSqliteStoreGetGames(t *testing.T) {
 	err = store.Season().AddSeason(season)
 	conference := &data.Conference{ID: "id", League: league, Name: "name"}
 	err = store.Conference().AddConference(conference)
+	division := &data.Division{ID: "id", League: league, Name: "name"}
+	err = store.Division().AddDivision(division)
 	homeVenue := &data.Venue{ID: "homeid", League: league, City: "city", Name: "name", Timezone: "timezone", Address: "address"}
 	err = store.Venue().AddVenue(homeVenue)
-	homeTeam := &data.Team{ID: "homeid", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: homeVenue, Conference: conference}
+	homeTeam := &data.Team{ID: "homeid", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: homeVenue, Conference: conference, Division: division}
 	err = store.Team().AddTeam(homeTeam)
 	assert.NoError(t, err, "Should not have error")
 	awayVenue := &data.Venue{ID: "awayid", League: league, City: "city", Name: "name", Timezone: "timezone", Address: "address"}
 	err = store.Venue().AddVenue(awayVenue)
-	awayTeam := &data.Team{ID: "awayid", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: awayVenue, Conference: conference}
+	awayTeam := &data.Team{ID: "awayid", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: awayVenue, Conference: conference, Division: division}
 	err = store.Team().AddTeam(awayTeam)
 	assert.NoError(t, err, "Should not have error")
 	date := time.Now()
