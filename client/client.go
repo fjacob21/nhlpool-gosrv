@@ -185,6 +185,8 @@ func (c *Client) AddTeam(
 	venueName string,
 	venueTimezone string,
 	venueAddress string,
+	conferenceID string,
+	conferenceName string,
 ) error {
 	if c.sessionID == "" {
 		return errors.New("Need to be logged")
@@ -203,6 +205,8 @@ func (c *Client) AddTeam(
 	body.Venue.Name = venueName
 	body.Venue.Timezone = venueTimezone
 	body.Venue.Address = venueAddress
+	body.Conference.ID = conferenceID
+	body.Conference.Name = conferenceName
 
 	buf := new(bytes.Buffer)
 	json.NewEncoder(buf).Encode(body)

@@ -20,14 +20,16 @@ func TestNewSqliteStoreAddPrediction(t *testing.T) {
 	err = store.League().AddLeague(&league)
 	season := &data.Season{Year: 2000, League: &league}
 	err = store.Season().AddSeason(season)
+	conference := &data.Conference{ID: "id", League: league, Name: "name"}
+	err = store.Conference().AddConference(conference)
 	homeVenue := &data.Venue{ID: "homeid", League: league, City: "city", Name: "name", Timezone: "timezone", Address: "address"}
 	err = store.Venue().AddVenue(homeVenue)
-	homeTeam := &data.Team{ID: "homeid", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: homeVenue}
+	homeTeam := &data.Team{ID: "homeid", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: homeVenue, Conference: conference}
 	err = store.Team().AddTeam(homeTeam)
 	assert.NoError(t, err, "Should not have error")
 	awayVenue := &data.Venue{ID: "awayid", League: league, City: "city", Name: "name", Timezone: "timezone", Address: "address"}
 	err = store.Venue().AddVenue(awayVenue)
-	awayTeam := &data.Team{ID: "awayid", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: awayVenue}
+	awayTeam := &data.Team{ID: "awayid", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: awayVenue, Conference: conference}
 	err = store.Team().AddTeam(awayTeam)
 	assert.NoError(t, err, "Should not have error")
 	start := time.Now()
@@ -59,6 +61,8 @@ func TestNewSqliteStoreAddPredictionEmpty(t *testing.T) {
 	err = store.League().AddLeague(&league)
 	season := &data.Season{Year: 2000, League: &league}
 	err = store.Season().AddSeason(season)
+	conference := &data.Conference{ID: "id", League: league, Name: "name"}
+	err = store.Conference().AddConference(conference)
 	matchup := &data.Matchup{League: league, Season: *season, ID: "id", Round: 1}
 	err = store.Matchup().AddMatchup(matchup)
 	assert.NoError(t, err, "Should not have error")
@@ -87,14 +91,16 @@ func TestNewSqliteStoreUpdatePrediction(t *testing.T) {
 	err = store.League().AddLeague(&league)
 	season := &data.Season{Year: 2000, League: &league}
 	err = store.Season().AddSeason(season)
+	conference := &data.Conference{ID: "id", League: league, Name: "name"}
+	err = store.Conference().AddConference(conference)
 	homeVenue := &data.Venue{ID: "homeid", League: league, City: "city", Name: "name", Timezone: "timezone", Address: "address"}
 	err = store.Venue().AddVenue(homeVenue)
-	homeTeam := &data.Team{ID: "homeid", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: homeVenue}
+	homeTeam := &data.Team{ID: "homeid", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: homeVenue, Conference: conference}
 	err = store.Team().AddTeam(homeTeam)
 	assert.NoError(t, err, "Should not have error")
 	awayVenue := &data.Venue{ID: "awayid", League: league, City: "city", Name: "name", Timezone: "timezone", Address: "address"}
 	err = store.Venue().AddVenue(awayVenue)
-	awayTeam := &data.Team{ID: "awayid", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: awayVenue}
+	awayTeam := &data.Team{ID: "awayid", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: awayVenue, Conference: conference}
 	err = store.Team().AddTeam(awayTeam)
 	assert.NoError(t, err, "Should not have error")
 	start := time.Now()
@@ -130,14 +136,16 @@ func TestNewSqliteStoreDeletePrediction(t *testing.T) {
 	err = store.League().AddLeague(&league)
 	season := &data.Season{Year: 2000, League: &league}
 	err = store.Season().AddSeason(season)
+	conference := &data.Conference{ID: "id", League: league, Name: "name"}
+	err = store.Conference().AddConference(conference)
 	homeVenue := &data.Venue{ID: "homeid", League: league, City: "city", Name: "name", Timezone: "timezone", Address: "address"}
 	err = store.Venue().AddVenue(homeVenue)
-	homeTeam := &data.Team{ID: "homeid", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: homeVenue}
+	homeTeam := &data.Team{ID: "homeid", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: homeVenue, Conference: conference}
 	err = store.Team().AddTeam(homeTeam)
 	assert.NoError(t, err, "Should not have error")
 	awayVenue := &data.Venue{ID: "awayid", League: league, City: "city", Name: "name", Timezone: "timezone", Address: "address"}
 	err = store.Venue().AddVenue(awayVenue)
-	awayTeam := &data.Team{ID: "awayid", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: awayVenue}
+	awayTeam := &data.Team{ID: "awayid", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: awayVenue, Conference: conference}
 	err = store.Team().AddTeam(awayTeam)
 	assert.NoError(t, err, "Should not have error")
 	start := time.Now()
@@ -173,14 +181,16 @@ func TestNewSqliteStoreGetPredictions(t *testing.T) {
 	err = store.League().AddLeague(&league)
 	season := &data.Season{Year: 2000, League: &league}
 	err = store.Season().AddSeason(season)
+	conference := &data.Conference{ID: "id", League: league, Name: "name"}
+	err = store.Conference().AddConference(conference)
 	homeVenue := &data.Venue{ID: "homeid", League: league, City: "city", Name: "name", Timezone: "timezone", Address: "address"}
 	err = store.Venue().AddVenue(homeVenue)
-	homeTeam := &data.Team{ID: "homeid", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: homeVenue}
+	homeTeam := &data.Team{ID: "homeid", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: homeVenue, Conference: conference}
 	err = store.Team().AddTeam(homeTeam)
 	assert.NoError(t, err, "Should not have error")
 	awayVenue := &data.Venue{ID: "awayid", League: league, City: "city", Name: "name", Timezone: "timezone", Address: "address"}
 	err = store.Venue().AddVenue(awayVenue)
-	awayTeam := &data.Team{ID: "awayid", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: awayVenue}
+	awayTeam := &data.Team{ID: "awayid", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: awayVenue, Conference: conference}
 	err = store.Team().AddTeam(awayTeam)
 	assert.NoError(t, err, "Should not have error")
 	start := time.Now()
@@ -215,6 +225,8 @@ func TestNewSqliteStoreGetPredictionsEmpty(t *testing.T) {
 	err = store.League().AddLeague(&league)
 	season := &data.Season{Year: 2000, League: &league}
 	err = store.Season().AddSeason(season)
+	conference := &data.Conference{ID: "id", League: league, Name: "name"}
+	err = store.Conference().AddConference(conference)
 	matchup := &data.Matchup{League: league, Season: *season, ID: "id", Round: 1}
 	err = store.Matchup().AddMatchup(matchup)
 	assert.NoError(t, err, "Should not have error")
