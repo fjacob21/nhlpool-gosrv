@@ -16,6 +16,7 @@ type Store interface {
 	Winner() WinnerStore
 	Prediction() PredictionStore
 	Conference() ConferenceStore
+	Division() DivisionStore
 }
 
 var activeStore = NewMemoryStore()

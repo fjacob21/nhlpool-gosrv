@@ -75,6 +75,7 @@ func (t *Team) Convert() *data.Team {
 	team.Website = t.OfficialSiteURL
 	team.Venue = t.Venue.Convert()
 	team.Conference = t.Conference.Convert()
+	team.Division = t.Division.Convert()
 	return team
 }
 
@@ -84,4 +85,12 @@ func (c *Conference) Convert() *data.Conference {
 	conference.ID = fmt.Sprintf("%d", c.ID)
 	conference.Name = c.Name
 	return conference
+}
+
+// Convert Convert to data division
+func (c *Division) Convert() *data.Division {
+	division := &data.Division{}
+	division.ID = fmt.Sprintf("%d", c.ID)
+	division.Name = c.Name
+	return division
 }

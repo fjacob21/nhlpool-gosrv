@@ -19,7 +19,7 @@ func ImportNHLTeam(user string, password string) {
 		for teamID, team := range teams {
 			teamInfo := team.Convert()
 			fmt.Printf("Add team %v\n", teamInfo)
-			err = client.AddTeam("nhl", teamInfo.ID, teamInfo.Abbreviation, teamInfo.Name, teamInfo.Fullname, teamInfo.City, teamInfo.Active, teamInfo.CreationYear, teamInfo.Website, teamInfo.Venue.ID, teamInfo.Venue.City, teamInfo.Venue.Name, teamInfo.Venue.Timezone, teamInfo.Venue.Address, teamInfo.Conference.ID, teamInfo.Conference.Name)
+			err = client.AddTeam("nhl", teamInfo.ID, teamInfo.Abbreviation, teamInfo.Name, teamInfo.Fullname, teamInfo.City, teamInfo.Active, teamInfo.CreationYear, teamInfo.Website, teamInfo.Venue.ID, teamInfo.Venue.City, teamInfo.Venue.Name, teamInfo.Venue.Timezone, teamInfo.Venue.Address, teamInfo.Conference.ID, teamInfo.Conference.Name, teamInfo.Division.ID, teamInfo.Division.Name)
 			if err != nil {
 				fmt.Printf("Cannot Add team %v: %v err:%v\n", teamID, teamInfo.Name, err)
 			}

@@ -23,6 +23,7 @@ type SqliteStore struct {
 	winner     *SqliteStoreWinner
 	prediction *SqliteStorePrediction
 	conference *SqliteStoreConference
+	division   *SqliteStoreDivision
 }
 
 // NewSqliteStore Create a new memory store
@@ -48,6 +49,7 @@ func NewSqliteStore() Store {
 	store.winner = NewSqliteStoreWinner(store.database, store)
 	store.prediction = NewSqliteStorePrediction(store.database, store)
 	store.conference = NewSqliteStoreConference(store.database, store)
+	store.division = NewSqliteStoreDivision(store.database, store)
 	return store
 }
 
@@ -116,6 +118,11 @@ func (st *SqliteStore) Conference() ConferenceStore {
 	return st.conference
 }
 
+// Division Return the division store
+func (st *SqliteStore) Division() DivisionStore {
+	return st.division
+}
+
 // Clean Empty the store
 func (st *SqliteStore) Clean() error {
 	errPlayer := st.player.Clean()
@@ -130,6 +137,7 @@ func (st *SqliteStore) Clean() error {
 	errWinner := st.winner.Clean()
 	errPrediction := st.prediction.Clean()
 	errConference := st.conference.Clean()
+	errDivision := st.division.Clean()
 	if errPlayer != nil {
 		return errPlayer
 	}
@@ -165,6 +173,9 @@ func (st *SqliteStore) Clean() error {
 	}
 	if errConference != nil {
 		return errConference
+	}
+	if errDivision != nil {
+		return errDivision
 	}
 	return nil
 }

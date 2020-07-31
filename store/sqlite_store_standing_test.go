@@ -19,9 +19,11 @@ func TestNewSqliteStoreAddstanding(t *testing.T) {
 	err = store.Season().AddSeason(season)
 	conference := &data.Conference{ID: "id", League: league, Name: "name"}
 	err = store.Conference().AddConference(conference)
+	division := &data.Division{ID: "id", League: league, Name: "name"}
+	err = store.Division().AddDivision(division)
 	venue := &data.Venue{ID: "id", League: league, City: "city", Name: "name", Timezone: "timezone", Address: "address"}
 	err = store.Venue().AddVenue(venue)
-	team := &data.Team{ID: "id", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: venue, Conference: conference}
+	team := &data.Team{ID: "id", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: venue, Conference: conference, Division: division}
 	err = store.Team().AddTeam(team)
 	assert.NoError(t, err, "Should not have error")
 	standing := &data.Standing{League: league, Season: *season, Team: *team, Points: 0, Win: 1, Losses: 2, OT: 3, GamesPlayed: 4, GoalsAgainst: 5, GoalsScored: 6, Ranks: 7}
@@ -54,9 +56,11 @@ func TestNewSqliteStoreUpdatestanding(t *testing.T) {
 	err = store.Season().AddSeason(season)
 	conference := &data.Conference{ID: "id", League: league, Name: "name"}
 	err = store.Conference().AddConference(conference)
+	division := &data.Division{ID: "id", League: league, Name: "name"}
+	err = store.Division().AddDivision(division)
 	venue := &data.Venue{ID: "id", League: league, City: "city", Name: "name", Timezone: "timezone", Address: "address"}
 	err = store.Venue().AddVenue(venue)
-	team := &data.Team{ID: "id", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: venue, Conference: conference}
+	team := &data.Team{ID: "id", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: venue, Conference: conference, Division: division}
 	err = store.Team().AddTeam(team)
 	assert.NoError(t, err, "Should not have error")
 	standing := &data.Standing{League: league, Season: *season, Team: *team, Points: 0, Win: 1, Losses: 2, OT: 3, GamesPlayed: 4, GoalsAgainst: 5, GoalsScored: 6, Ranks: 7}
@@ -99,9 +103,11 @@ func TestNewSqliteStoreDeletestanding(t *testing.T) {
 	err = store.Season().AddSeason(season)
 	conference := &data.Conference{ID: "id", League: league, Name: "name"}
 	err = store.Conference().AddConference(conference)
+	division := &data.Division{ID: "id", League: league, Name: "name"}
+	err = store.Division().AddDivision(division)
 	venue := &data.Venue{ID: "id", League: league, City: "city", Name: "name", Timezone: "timezone", Address: "address"}
 	err = store.Venue().AddVenue(venue)
-	team := &data.Team{ID: "id", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: venue, Conference: conference}
+	team := &data.Team{ID: "id", League: league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: venue, Conference: conference, Division: division}
 	err = store.Team().AddTeam(team)
 	assert.NoError(t, err, "Should not have error")
 	standing := &data.Standing{League: league, Season: *season, Team: *team, Points: 0, Win: 1, Losses: 2, OT: 3, GamesPlayed: 4, GoalsAgainst: 5, GoalsScored: 6, Ranks: 7}
@@ -133,9 +139,11 @@ func TestNewSqliteStoreGetstandings(t *testing.T) {
 	store.Season().AddSeason(season)
 	conference := &data.Conference{ID: "id", League: *league, Name: "name"}
 	err := store.Conference().AddConference(conference)
+	division := &data.Division{ID: "id", League: *league, Name: "name"}
+	err = store.Division().AddDivision(division)
 	venue := &data.Venue{ID: "venueid", League: *league, City: "city", Name: "name", Timezone: "timezone", Address: "address"}
 	store.Venue().AddVenue(venue)
-	team := data.Team{ID: "teamid", League: *league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: venue, Conference: conference}
+	team := data.Team{ID: "teamid", League: *league, Abbreviation: "abbreviation", Name: "name", Fullname: "fullname", City: "city", Active: true, CreationYear: "creationyear", Website: "website", Venue: venue, Conference: conference, Division: division}
 	store.Team().AddTeam(&team)
 	standing := &data.Standing{League: *league, Season: *season, Team: team, Points: 0, Win: 1, Losses: 2, OT: 3, GamesPlayed: 4, GoalsAgainst: 5, GoalsScored: 6, Ranks: 7}
 	err = store.Standing().AddStanding(standing)

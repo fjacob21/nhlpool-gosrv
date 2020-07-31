@@ -35,7 +35,7 @@ func (st *SqliteStoreTeam) createTables() error {
 
 func (st *SqliteStoreTeam) createTable() error {
 	fmt.Printf("createTable team\n")
-	statement, err := st.database.Prepare("CREATE TABLE IF NOT EXISTS team (id TEXT NOT NULL, league_id TEXT NOT NULL, abbreviation TEXT, name TEXT, fullname TEXT, city TEXT, active INTEGER, creation_year TEXT, website TEXT, venue_id TEXT, conference_id TEXT, PRIMARY KEY(id,league_id))")
+	statement, err := st.database.Prepare("CREATE TABLE IF NOT EXISTS team (id TEXT NOT NULL, league_id TEXT NOT NULL, abbreviation TEXT, name TEXT, fullname TEXT, city TEXT, active INTEGER, creation_year TEXT, website TEXT, venue_id TEXT, conference_id TEXT, division_id TEXT, PRIMARY KEY(id,league_id))")
 	if err != nil {
 		fmt.Printf("createTable Prepare Err: %v\n", err)
 		return err
@@ -80,12 +80,12 @@ func (st *SqliteStoreTeam) Clean() error {
 func (st *SqliteStoreTeam) AddTeam(team *data.Team) error {
 	teams, _ := st.GetTeams(&team.League)
 	fmt.Printf("-->AddTeam %v %v\n", teams, team)
-	statement, err := st.database.Prepare("INSERT INTO team (id, league_id, abbreviation, name, fullname, city, active, creation_year, website, venue_id, conference_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+	statement, err := st.database.Prepare("INSERT INTO team (id, league_id, abbreviation, name, fullname, city, active, creation_year, website, venue_id, conference_id, division_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
 	if err != nil {
 		fmt.Printf("AddTeam Prepare Err: %v\n", err)
 		return err
 	}
-	_, err = statement.Exec(team.ID, team.League.ID, team.Abbreviation, team.Name, team.Fullname, team.City, 1, team.CreationYear, team.Website, team.Venue.ID, team.Conference.ID)
+	_, err = statement.Exec(team.ID, team.League.ID, team.Abbreviation, team.Name, team.Fullname, team.City, 1, team.CreationYear, team.Website, team.Venue.ID, team.Conference.ID, team.Division.ID)
 	if err != nil {
 		teams, _ := st.GetTeams(&team.League)
 		fmt.Printf("AddTeam Exec teams:%v Err: %v\n", teams, err)
@@ -135,7 +135,7 @@ func (st *SqliteStoreTeam) DeleteTeam(team *data.Team) error {
 
 // GetTeam Get a venue
 func (st *SqliteStoreTeam) GetTeam(ID string, league *data.League) (*data.Team, error) {
-	row := st.database.QueryRow("SELECT id, league_id, abbreviation, name, fullname, city, active, creation_year, website, venue_id, conference_id FROM team WHERE id=? AND league_id=?", ID, league.ID)
+	row := st.database.QueryRow("SELECT id, league_id, abbreviation, name, fullname, city, active, creation_year, website, venue_id, conference_id, division_id FROM team WHERE id=? AND league_id=?", ID, league.ID)
 	var id string
 	var leagueID string
 	var abbreviation string
@@ -147,9 +147,10 @@ func (st *SqliteStoreTeam) GetTeam(ID string, league *data.League) (*data.Team, 
 	var website string
 	var venueID string
 	var conferenceID string
+	var divisionID string
 	if row != nil {
 		team := &data.Team{}
-		err := row.Scan(&id, &leagueID, &abbreviation, &name, &fullname, &city, &active, &creationYear, &website, &venueID, &conferenceID)
+		err := row.Scan(&id, &leagueID, &abbreviation, &name, &fullname, &city, &active, &creationYear, &website, &venueID, &conferenceID, &divisionID)
 		if err != nil {
 			fmt.Printf("GetTeam Scan Err: %v\n", err)
 			return nil, err
@@ -165,6 +166,7 @@ func (st *SqliteStoreTeam) GetTeam(ID string, league *data.League) (*data.Team, 
 		team.Website = website
 		team.Venue, _ = st.store.Venue().GetVenue(venueID, league)
 		team.Conference, _ = st.store.Conference().GetConference(conferenceID, league)
+		team.Division, _ = st.store.Division().GetDivision(divisionID, league)
 
 		return team, nil
 	}
@@ -174,7 +176,7 @@ func (st *SqliteStoreTeam) GetTeam(ID string, league *data.League) (*data.Team, 
 // GetTeams Return a list of all team
 func (st *SqliteStoreTeam) GetTeams(league *data.League) ([]data.Team, error) {
 	var teams []data.Team
-	rows, err := st.database.Query("SELECT id, league_id, abbreviation, name, fullname, city, active, creation_year, website, venue_id, conference_id FROM team WHERE league_id=?", league.ID)
+	rows, err := st.database.Query("SELECT id, league_id, abbreviation, name, fullname, city, active, creation_year, website, venue_id, conference_id, division_id FROM team WHERE league_id=?", league.ID)
 	if err != nil {
 		fmt.Printf("GetTeams query Err: %v\n", err)
 		return []data.Team{}, err
@@ -190,9 +192,10 @@ func (st *SqliteStoreTeam) GetTeams(league *data.League) ([]data.Team, error) {
 	var website string
 	var venueID string
 	var conferenceID string
+	var divisionID string
 	for rows.Next() {
 		team := data.Team{}
-		err := rows.Scan(&id, &leagueID, &abbreviation, &name, &fullname, &city, &active, &creationYear, &website, &venueID, &conferenceID)
+		err := rows.Scan(&id, &leagueID, &abbreviation, &name, &fullname, &city, &active, &creationYear, &website, &venueID, &conferenceID, &divisionID)
 		if err != nil {
 			fmt.Printf("GetTeam Scan Err: %v\n", err)
 			return nil, err
@@ -208,6 +211,7 @@ func (st *SqliteStoreTeam) GetTeams(league *data.League) ([]data.Team, error) {
 		team.Website = website
 		team.Venue, _ = st.store.Venue().GetVenue(venueID, league)
 		team.Conference, _ = st.store.Conference().GetConference(conferenceID, league)
+		team.Division, _ = st.store.Division().GetDivision(divisionID, league)
 
 		teams = append(teams, team)
 	}
