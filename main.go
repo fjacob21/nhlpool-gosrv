@@ -35,7 +35,6 @@ func main() {
 		} else if *command == "importnhlgame" {
 			cmd.ImportNHLGame(*year, *user, *password)
 		}
-
 	} else {
 		cmd.Service()
 	}
