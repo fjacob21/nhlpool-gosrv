@@ -28,6 +28,7 @@ func Service() {
 	handler.HandleFunc("^/league/(.*)/season/(.*)/winner/(.*)/$", web.HandleWinnerRequest)
 	handler.HandleFunc("^/league/(.*)/season/(.*)/matchup/$", web.HandleMatchupsRequest)
 	handler.HandleFunc("^/league/(.*)/season/(.*)/matchup/(.*)/$", web.HandleMatchupRequest)
+	handler.HandleFunc("^/league/(.*)/season/(.*)/game/update/$", web.HandleGameUpdateRequest)
 	handler.HandleFunc("^/league/(.*)/season/(.*)/game/$", web.HandleGamesRequest)
 	handler.HandleFunc("^/league/(.*)/season/(.*)/standing/$", web.HandleStandingsRequest)
 	handler.HandleFunc("^/league/(.*)/season/(.*)/standing/(.*)/$", web.HandleStandingRequest)

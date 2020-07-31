@@ -53,3 +53,38 @@ func AddGame(leagueID string, year int, request data.AddGameRequest) data.AddGam
 	reply.Game = *game
 	return reply
 }
+
+// UpdateGame Process the Update game request
+func UpdateGame(leagueID string, year int, request data.EditGameRequest) data.EditGameReply {
+	var reply data.EditGameReply
+	log.Println("Update Game", request)
+	league := getLeague(leagueID)
+	season := getSeason(year, league)
+	home := getTeam(request.HomeID, league)
+	away := getTeam(request.AwayID, league)
+	date, err := time.Parse(time.RFC3339, request.Date)
+	if err != nil {
+		fmt.Printf("EditGame Invalid time Err: %v\n", err)
+	}
+	game := &data.Game{
+		League:   *league,
+		Season:   *season,
+		Home:     *home,
+		Away:     *away,
+		Date:     date,
+		Type:     request.Type,
+		State:    request.State,
+		HomeGoal: request.HomeGoal,
+		AwayGoal: request.AwayGoal,
+	}
+
+	err = store.GetStore().Game().UpdateGame(game)
+	if err != nil {
+		reply.Result.Code = data.EXISTS
+		return reply
+	}
+
+	reply.Result.Code = data.SUCCESS
+	reply.Game = *game
+	return reply
+}

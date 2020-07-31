@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"fmt"
+
 	"nhlpool.com/service/go/nhlpool/data"
 	"nhlpool.com/service/go/nhlpool/store"
 )
@@ -20,6 +22,49 @@ func GetStanding(leagueID string, year int, teamID string) data.GetStandingReply
 	if standing == nil {
 		reply.Result.Code = data.NOTFOUND
 		reply.Standing = data.Standing{}
+		return reply
+	}
+	reply.Result.Code = data.SUCCESS
+	reply.Standing = *standing
+	return reply
+}
+
+// EditStanding Process the edit standing request
+func EditStanding(leagueID string, year int, teamID string, request data.EditStandingRequest) data.EditStandingReply {
+	var reply data.EditStandingReply
+	session := store.GetSessionManager().Get(request.SessionID)
+	if session == nil {
+		fmt.Printf("Session Not found\n")
+		reply.Result.Code = data.ACCESSDENIED
+		return reply
+	}
+	league := getLeague(leagueID)
+	season := getSeason(year, league)
+	team := getTeam(teamID, league)
+	standing := getStanding(team, season)
+	if standing == nil {
+		fmt.Printf("Not found\n")
+		reply.Result.Code = data.NOTFOUND
+		return reply
+	}
+	if !session.Player.Admin {
+		fmt.Printf("Not admin\n")
+		reply.Result.Code = data.ACCESSDENIED
+		return reply
+	}
+	standing.Points = request.Points
+	standing.Win = request.Win
+	standing.Losses = request.Losses
+	standing.OT = request.OT
+	standing.GamesPlayed = request.GamesPlayed
+	standing.GoalsAgainst = request.GoalsAgainst
+	standing.GoalsScored = request.GoalsScored
+	standing.Ranks = request.Ranks
+	err := store.GetStore().Standing().UpdateStanding(standing)
+	if err != nil {
+		reply.Result.Code = data.ERROR
+		reply.Standing = data.Standing{}
+		fmt.Printf("Update err %v\n", err)
 		return reply
 	}
 	reply.Result.Code = data.SUCCESS

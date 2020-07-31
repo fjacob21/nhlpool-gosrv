@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"time"
 
 	"nhlpool.com/service/go/nhlpool/data"
 )
@@ -317,6 +318,59 @@ func (c *Client) AddStanding(
 	return nil
 }
 
+// UpdateStanding update a standing
+func (c *Client) UpdateStanding(
+	leagueID string,
+	year int,
+	teamID string,
+	points int,
+	win int,
+	losses int,
+	ot int,
+	gamesPlayed int,
+	goalsAgainst int,
+	goalsScored int,
+	ranks int,
+) error {
+	if c.sessionID == "" {
+		return errors.New("Need to be logged")
+	}
+	body := data.EditStandingRequest{}
+	body.SessionID = c.sessionID
+	body.Points = points
+	body.Win = win
+	body.Losses = losses
+	body.OT = ot
+	body.GamesPlayed = gamesPlayed
+	body.GoalsAgainst = goalsAgainst
+	body.GoalsScored = goalsScored
+	body.Ranks = ranks
+
+	buf := new(bytes.Buffer)
+	json.NewEncoder(buf).Encode(body)
+
+	url := fmt.Sprintf("%v/league/%v/season/%v/standing/%v/", c.url, leagueID, year, teamID)
+	req, err := http.NewRequest("POST", url, buf)
+	if err != nil {
+		return err
+	}
+
+	client := &http.Client{}
+	res, err := client.Do(req)
+
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+	var editStandingReply data.EditStandingReply
+	bodyReply, _ := ioutil.ReadAll(res.Body)
+	json.Unmarshal(bodyReply, &editStandingReply)
+	if editStandingReply.Result.Code != 0 {
+		return errors.New("Cannot Edit Standing")
+	}
+	return nil
+}
+
 // AddGame add a game
 func (c *Client) AddGame(
 	leagueID string,
@@ -366,6 +420,55 @@ func (c *Client) AddGame(
 	return nil
 }
 
+// UpdateGame update a game
+func (c *Client) UpdateGame(
+	leagueID string,
+	year int,
+	home string,
+	away string,
+	date string,
+	gameType int,
+	state int,
+	homeGoal int,
+	awayGoal int,
+) error {
+	if c.sessionID == "" {
+		return errors.New("Need to be logged")
+	}
+	body := data.EditGameRequest{}
+	body.HomeID = home
+	body.AwayID = away
+	body.Date = date
+	body.Type = gameType
+	body.State = state
+	body.HomeGoal = homeGoal
+	body.AwayGoal = awayGoal
+
+	buf := new(bytes.Buffer)
+	json.NewEncoder(buf).Encode(body)
+
+	url := fmt.Sprintf("%v/league/%v/season/%v/game/update/", c.url, leagueID, year)
+	req, err := http.NewRequest("POST", url, buf)
+	if err != nil {
+		return err
+	}
+
+	client := &http.Client{}
+	res, err := client.Do(req)
+
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+	var editStandingReply data.EditStandingReply
+	bodyReply, _ := ioutil.ReadAll(res.Body)
+	json.Unmarshal(bodyReply, &editStandingReply)
+	if editStandingReply.Result.Code != 0 {
+		return errors.New("Cannot Update")
+	}
+	return nil
+}
+
 // AddMatchup add a matchup
 func (c *Client) AddMatchup(
 	leagueID string,
@@ -411,7 +514,7 @@ func (c *Client) AddMatchup(
 	return nil
 }
 
-// GetMatchups add all the matchups
+// GetMatchups Get all the matchups
 func (c *Client) GetMatchups(
 	leagueID string,
 	year int,
@@ -431,7 +534,126 @@ func (c *Client) GetMatchups(
 	bodyReply, _ := ioutil.ReadAll(res.Body)
 	json.Unmarshal(bodyReply, &getMatchupsReply)
 	if getMatchupsReply.Result.Code != 0 {
-		return result, errors.New("Cannot Add")
+		return result, errors.New("Cannot Get matchups")
 	}
 	return getMatchupsReply.Matchups, nil
+}
+
+// GetMatchupsRound Get all the matchups
+func (c *Client) GetMatchupsRound(
+	leagueID string,
+	year int,
+	round int,
+) ([]data.Matchup, error) {
+	var result []data.Matchup
+	matchups, err := c.GetMatchups(leagueID, year)
+	if err != nil {
+		fmt.Printf("GetMatchupsRound error %v\n", err)
+		return result, err
+	}
+
+	for _, matchup := range matchups {
+		if matchup.Round == round {
+			result = append(result, matchup)
+		}
+	}
+	return result, nil
+}
+
+// GetStandings Get all the standings
+func (c *Client) GetStandings(
+	leagueID string,
+	year int,
+) ([]data.Standing, error) {
+	var result []data.Standing
+	if c.sessionID == "" {
+		return result, errors.New("Need to be logged")
+	}
+
+	url := fmt.Sprintf("%v/league/%v/season/%v/standing/", c.url, leagueID, year)
+	res, err := http.Get(url)
+	if err != nil {
+		return result, err
+	}
+	defer res.Body.Close()
+	var getStandingsReply data.GetStandingsReply
+	bodyReply, _ := ioutil.ReadAll(res.Body)
+	json.Unmarshal(bodyReply, &getStandingsReply)
+	if getStandingsReply.Result.Code != 0 {
+		return result, errors.New("Cannot get standings")
+	}
+	return getStandingsReply.Standings, nil
+}
+
+// GetStanding Get a standing
+func (c *Client) GetStanding(
+	leagueID string,
+	year int,
+	teamID string,
+) (data.Standing, error) {
+	var result data.Standing
+	if c.sessionID == "" {
+		return result, errors.New("Need to be logged")
+	}
+
+	url := fmt.Sprintf("%v/league/%v/season/%v/standing/%v/", c.url, leagueID, year, teamID)
+	res, err := http.Get(url)
+	if err != nil {
+		return result, err
+	}
+	defer res.Body.Close()
+	var getStandingReply data.GetStandingReply
+	bodyReply, _ := ioutil.ReadAll(res.Body)
+	json.Unmarshal(bodyReply, &getStandingReply)
+	if getStandingReply.Result.Code != 0 {
+		return result, errors.New("Cannot get standing")
+	}
+	return getStandingReply.Standing, nil
+}
+
+// GetGames Get a game
+func (c *Client) GetGames(
+	leagueID string,
+	year int,
+) ([]data.Game, error) {
+	var result []data.Game
+	if c.sessionID == "" {
+		return result, errors.New("Need to be logged")
+	}
+
+	url := fmt.Sprintf("%v/league/%v/season/%v/game/", c.url, leagueID, year)
+	res, err := http.Get(url)
+	if err != nil {
+		return result, err
+	}
+	defer res.Body.Close()
+	var getGamesReply data.GetGamesReply
+	bodyReply, _ := ioutil.ReadAll(res.Body)
+	json.Unmarshal(bodyReply, &getGamesReply)
+	if getGamesReply.Result.Code != 0 {
+		return result, errors.New("Cannot get games")
+	}
+	return getGamesReply.Games, nil
+}
+
+// GetGame Get a game
+func (c *Client) GetGame(
+	leagueID string,
+	year int,
+	home string,
+	away string,
+	date string,
+) (data.Game, error) {
+	games, err := c.GetGames(leagueID, year)
+	if err != nil {
+		fmt.Printf("GetGames error %v %v %v %v\n", home, away, date, err)
+		return data.Game{}, err
+	}
+
+	for _, game := range games {
+		if game.Home.ID == home && game.Away.ID == away && game.Date.Format(time.RFC3339) == date {
+			return game, nil
+		}
+	}
+	return data.Game{}, errors.New("Cannot find game")
 }

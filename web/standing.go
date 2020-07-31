@@ -26,6 +26,15 @@ func HandleStandingRequest(w http.ResponseWriter, r *http.Request) {
 	case http.MethodGet:
 		handleSuccess(&w, controller.GetStanding(league, year, team))
 		break
+	case http.MethodPost:
+		var request data.EditStandingRequest
+		err := json.NewDecoder(r.Body).Decode(&request)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		handleSuccess(&w, controller.EditStanding(league, year, team, request))
+		break
 	case http.MethodDelete:
 		var request data.DeleteStandingRequest
 		err := json.NewDecoder(r.Body).Decode(&request)
