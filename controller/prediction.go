@@ -50,7 +50,9 @@ func EditPrediction(leagueID string, year int, playerID string, matchupID string
 		return reply
 	}
 	team := getTeam(request.Winner, league)
-	prediction.Winner = *team
+	if team != nil {
+		prediction.Winner = *team
+	}
 	prediction.Games = request.Games
 	err := store.GetStore().Prediction().UpdatePrediction(prediction)
 	if err != nil {

@@ -365,3 +365,73 @@ func (c *Client) AddGame(
 	}
 	return nil
 }
+
+// AddMatchup add a matchup
+func (c *Client) AddMatchup(
+	leagueID string,
+	year int,
+	id string,
+	home string,
+	away string,
+	round int,
+	start string,
+) error {
+	if c.sessionID == "" {
+		return errors.New("Need to be logged")
+	}
+	body := data.AddMatchupRequest{}
+	body.HomeID = home
+	body.AwayID = away
+	body.Start = start
+	body.ID = id
+	body.Round = round
+
+	buf := new(bytes.Buffer)
+	json.NewEncoder(buf).Encode(body)
+
+	url := fmt.Sprintf("%v/league/%v/season/%v/matchup/", c.url, leagueID, year)
+	req, err := http.NewRequest("POST", url, buf)
+	if err != nil {
+		return err
+	}
+
+	client := &http.Client{}
+	res, err := client.Do(req)
+
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+	var addMatchupReply data.AddMatchupReply
+	bodyReply, _ := ioutil.ReadAll(res.Body)
+	json.Unmarshal(bodyReply, &addMatchupReply)
+	if addMatchupReply.Result.Code != 0 {
+		return errors.New("Cannot Add")
+	}
+	return nil
+}
+
+// GetMatchups add all the matchups
+func (c *Client) GetMatchups(
+	leagueID string,
+	year int,
+) ([]data.Matchup, error) {
+	var result []data.Matchup
+	if c.sessionID == "" {
+		return result, errors.New("Need to be logged")
+	}
+
+	url := fmt.Sprintf("%v/league/%v/season/%v/matchup/", c.url, leagueID, year)
+	res, err := http.Get(url)
+	if err != nil {
+		return result, err
+	}
+	defer res.Body.Close()
+	var getMatchupsReply data.GetMatchupsReply
+	bodyReply, _ := ioutil.ReadAll(res.Body)
+	json.Unmarshal(bodyReply, &getMatchupsReply)
+	if getMatchupsReply.Result.Code != 0 {
+		return result, errors.New("Cannot Add")
+	}
+	return getMatchupsReply.Matchups, nil
+}

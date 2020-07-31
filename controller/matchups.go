@@ -21,7 +21,7 @@ func GetMatchups(leagueID string, year int) data.GetMatchupsReply {
 // AddMatchup Process the add matchup request
 func AddMatchup(leagueID string, year int, request data.AddMatchupRequest) data.AddMatchupReply {
 	var reply data.AddMatchupReply
-	log.Println("Add Standing", request)
+	log.Println("Add Matchup", request)
 	league := getLeague(leagueID)
 	season := getSeason(year, league)
 	home := getTeam(request.HomeID, league)
@@ -31,10 +31,14 @@ func AddMatchup(leagueID string, year int, request data.AddMatchupRequest) data.
 		League: *league,
 		Season: *season,
 		ID:     request.ID,
-		Home:   *home,
-		Away:   *away,
 		Round:  request.Round,
 		Start:  start,
+	}
+	if home != nil {
+		matchup.Home = *home
+	}
+	if away != nil {
+		matchup.Away = *away
 	}
 
 	err := store.GetStore().Matchup().AddMatchup(matchup)

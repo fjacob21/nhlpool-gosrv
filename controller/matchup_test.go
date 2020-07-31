@@ -88,3 +88,28 @@ func TestEditMatchup(t *testing.T) {
 	assert.Equal(t, reply.Matchups[0].Round, 2, "Invalid Round")
 	assert.Equal(t, reply.Matchups[0].Start.Unix(), start.Unix(), "Invalid start")
 }
+
+func TestEditMatchupEmpty(t *testing.T) {
+	store.Clean()
+	requestPlayer := data.AddPlayerRequest{Name: "name", Email: "email", Admin: true, Password: "password"}
+	replyPlayer := AddPlayer(requestPlayer)
+	loginReq := data.LoginRequest{Password: "password"}
+	loginReply := Login(replyPlayer.Player.ID, loginReq)
+	requestAddLeague := data.AddLeagueRequest{ID: "id", Name: "name", Description: "description", Website: "website"}
+	replyAddLeague := AddLeague(requestAddLeague)
+	requestSeason := data.AddSeasonRequest{Year: 2000}
+	replySeason := AddSeason(replyAddLeague.League.ID, requestSeason)
+	request := data.AddMatchupRequest{ID: "id", HomeID: "", AwayID: "", Round: 1, Start: ""}
+	replyMatchup := AddMatchup(replyAddLeague.League.ID, replySeason.Season.Year, request)
+	editReq := data.EditMatchupRequest{SessionID: loginReply.SessionID, HomeID: "", AwayID: "", Round: 2, Start: ""}
+	editReply := EditMatchup(replyAddLeague.League.ID, replySeason.Season.Year, replyMatchup.Matchup.ID, editReq)
+	assert.Equal(t, editReply.Result.Code, data.SUCCESS, "Should be a success")
+	reply := GetMatchups(replyAddLeague.League.ID, replySeason.Season.Year)
+	assert.Equal(t, len(reply.Matchups), 1, "Should have zero player")
+	assert.Equal(t, reply.Matchups[0].League.ID, replyAddLeague.League.ID, "Invalid league")
+	assert.Equal(t, reply.Matchups[0].Season.Year, replySeason.Season.Year, "Invalid season")
+	assert.Equal(t, reply.Matchups[0].ID, "id", "Invalid id")
+	assert.Equal(t, reply.Matchups[0].Home.ID, "", "Invalid Home")
+	assert.Equal(t, reply.Matchups[0].Away.ID, "", "Invalid away")
+	assert.Equal(t, reply.Matchups[0].Round, 2, "Invalid Round")
+}

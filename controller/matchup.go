@@ -50,8 +50,12 @@ func EditMatchup(leagueID string, year int, ID string, request data.EditMatchupR
 	home := getTeam(request.HomeID, league)
 	away := getTeam(request.AwayID, league)
 	start, _ := time.Parse(time.RFC3339, request.Start)
-	matchup.Home = *home
-	matchup.Away = *away
+	if home != nil {
+		matchup.Home = *home
+	}
+	if away != nil {
+		matchup.Away = *away
+	}
 	matchup.Start = start
 	matchup.Round = request.Round
 	err := store.GetStore().Matchup().UpdateMatchup(matchup)

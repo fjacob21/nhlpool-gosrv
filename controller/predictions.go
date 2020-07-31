@@ -31,8 +31,10 @@ func AddPrediction(leagueID string, year int, request data.AddPredictionRequest)
 		Season:  *season,
 		Player:  player,
 		Matchup: matchup,
-		Winner:  *team,
 		Games:   request.Games,
+	}
+	if team != nil {
+		prediction.Winner = *team
 	}
 
 	err := store.GetStore().Prediction().AddPrediction(prediction)
