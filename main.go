@@ -34,8 +34,6 @@ func main() {
 			cmd.ImportNHLStanding(*year, *user, *password)
 		} else if *command == "importnhlgame" {
 			cmd.ImportNHLGame(*year, *user, *password)
-		} else if *command == "updatenhl" {
-			cmd.UpdateNHL(*year, *user, *password)
 		}
 
 	} else {
