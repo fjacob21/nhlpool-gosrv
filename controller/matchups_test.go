@@ -32,6 +32,23 @@ func TestAddMatchup(t *testing.T) {
 	assert.Equal(t, reply.Matchup.Start.Unix(), start.Unix(), "Invalid start")
 }
 
+func TestAddMatchupEmpty(t *testing.T) {
+	store.Clean()
+	requestAddLeague := data.AddLeagueRequest{ID: "id", Name: "name", Description: "description", Website: "website"}
+	replyAddLeague := AddLeague(requestAddLeague)
+	requestSeason := data.AddSeasonRequest{Year: 2000}
+	replySeason := AddSeason(replyAddLeague.League.ID, requestSeason)
+	request := data.AddMatchupRequest{ID: "id", HomeID: "", AwayID: "", Round: 1, Start: ""}
+	reply := AddMatchup(replyAddLeague.League.ID, replySeason.Season.Year, request)
+	assert.NotNil(t, reply, "Should not be nil")
+	assert.Equal(t, reply.Matchup.League.ID, replyAddLeague.League.ID, "Invalid league")
+	assert.Equal(t, reply.Matchup.Season.Year, replySeason.Season.Year, "Invalid season")
+	assert.Equal(t, reply.Matchup.ID, "id", "Invalid id")
+	assert.Equal(t, reply.Matchup.Home.ID, "", "Invalid Home")
+	assert.Equal(t, reply.Matchup.Away.ID, "", "Invalid away")
+	assert.Equal(t, reply.Matchup.Round, 1, "Invalid Round")
+}
+
 func TestGetMatchups(t *testing.T) {
 	store.Clean()
 	requestAddLeague := data.AddLeagueRequest{ID: "id", Name: "name", Description: "description", Website: "website"}

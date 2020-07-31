@@ -161,16 +161,22 @@ func (st *SqliteStoreMatchup) GetMatchup(league *data.League, season *data.Seaso
 		matchup.League = *league
 		matchup.Season = *season
 		matchup.ID = ID
-		matchup.Home = *home
-		matchup.Away = *away
+		if home != nil {
+			matchup.Home = *home
+		}
+		if away != nil {
+			matchup.Away = *away
+		}
 		matchup.Round = round
 		matchup.Start, err = time.Parse(time.RFC3339, start)
 		if err != nil {
 			fmt.Printf("GetMatchup Invalid time Err: %v\n", err)
 
 		}
-		matchup.SeasonGames, _ = st.store.Game().GetSeasonGames(league, season, home, away)
-		matchup.PlayoffGames, _ = st.store.Game().GetPlayoffGames(league, season, home, away)
+		if home != nil && away != nil {
+			matchup.SeasonGames, _ = st.store.Game().GetSeasonGames(league, season, home, away)
+			matchup.PlayoffGames, _ = st.store.Game().GetPlayoffGames(league, season, home, away)
+		}
 		matchup.CalculateResult()
 		return matchup, nil
 	}
@@ -207,16 +213,22 @@ func (st *SqliteStoreMatchup) GetMatchups(league *data.League, season *data.Seas
 		matchup.League = *league
 		matchup.Season = *season
 		matchup.ID = ID
-		matchup.Home = *home
-		matchup.Away = *away
+		if home != nil {
+			matchup.Home = *home
+		}
+		if away != nil {
+			matchup.Away = *away
+		}
 		matchup.Round = round
 		matchup.Start, err = time.Parse(time.RFC3339, start)
 		if err != nil {
 			fmt.Printf("GetMatchup Invalid time Err: %v\n", err)
 
 		}
-		matchup.SeasonGames, _ = st.store.Game().GetSeasonGames(league, season, home, away)
-		matchup.PlayoffGames, _ = st.store.Game().GetPlayoffGames(league, season, home, away)
+		if home != nil && away != nil {
+			matchup.SeasonGames, _ = st.store.Game().GetSeasonGames(league, season, home, away)
+			matchup.PlayoffGames, _ = st.store.Game().GetPlayoffGames(league, season, home, away)
+		}
 		matchup.CalculateResult()
 		matchups = append(matchups, *matchup)
 	}

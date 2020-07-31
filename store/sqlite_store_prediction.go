@@ -157,7 +157,9 @@ func (st *SqliteStorePrediction) GetPrediction(player *data.Player, matchup *dat
 		prediction.Season = *seasonObj
 		prediction.Player = playerObj
 		prediction.Matchup = matchupObj
-		prediction.Winner = *team
+		if team != nil {
+			prediction.Winner = *team
+		}
 		prediction.Games = games
 		return prediction, nil
 	}
@@ -194,7 +196,9 @@ func (st *SqliteStorePrediction) GetPredictions(league *data.League, season *dat
 		prediction.Season = *season
 		prediction.Player = player
 		prediction.Matchup = matchup
-		prediction.Winner = *team
+		if team != nil {
+			prediction.Winner = *team
+		}
 		prediction.Games = games
 
 		predictions = append(predictions, *prediction)
